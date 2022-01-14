@@ -1,75 +1,96 @@
-import React from 'react';
-import { View , Alert} from 'react-native';
-import { Layout, Text , Avatar ,Section, SectionContent, Button} from 'react-native-rapi-ui';
+import React, { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import {
+	Layout,
+	Text,
+	TextInput,
+	Button,
+	Avatar
+} from "react-native-rapi-ui";
 import firebase from "firebase";
-import {GetNameUser} from '../screens/utils/GetDataUser'
-import { render } from 'react-dom';
- 
-export default function ({ navigation }) {
-	const userName = GetNameUser()
-	console.log(userName)
 
-		return (
-			<Layout>
-				<View
-					style={{
-						flex: 1,
-						alignItems: 'center',
-						marginTop: 20,
-					}}>
-						<Avatar
-							source={require('../../media/avatar.png')}
-							size="xl"
-							shape="round"
-						/>
-						<Text 
-							style={{marginTop: 10}}>
-							{String(userName.userName)}
-						</Text>
-	
-						<Button
-							text="Modifier mon mot de passe"
-							onPress={() => {
-								//
-							}}
-							style={{
-								marginTop: 100,
-								
-							}}
-						/>
-						<Button
-							text="Modifier mon Avatar"
-							onPress={() => {
-								//
-							}}
-							style={{
-								marginTop: 10,
-								
-							}}
-						/>
-						<Button
-							text="Modifier mon nom"
-							onPress={() => {
-								//
-							}}
-							style={{
-								marginTop: 10,
-							}}
-						/>
-						<Button
-							status="danger"
-							text="Déconnexion"
-							onPress={() => {
-								firebase.auth().signOut();
-							}}
-							style={{
-								marginTop: 10,
-	
-							}}
-						/>
-				</View>
-			</Layout>
-		);
+export default function ({ navigation }) {
+
+	const [email, setEmail] = useState("")
+	const [name, setName] = useState("")
+
+	return (
+		<Layout>
+			<View style={styles.container}>
+				<Avatar
+					source={require('../../media/avatar.png')}
+					size="xl"
+					shape="round"
+				/>
+				<Text
+					style={styles.button}>
+					{String(name)}
+				</Text>
+
+				<TextInput
+					containerStyle={{ marginTop: 15 }}
+					placeholder="mail"
+					value={email}
+					autoCapitalize="none"
+					autoCompleteType="off"
+					autoCorrect={false}
+					keyboardType="email-address"
+					onChangeText={(text) => setEmail(text)}
+				/>
+				<TextInput
+					containerStyle={{ marginTop: 15 }}
+					placeholder="identifiant"
+					value={name}
+					autoCapitalize="none"
+					autoCompleteType="off"
+					autoCorrect={false}
+					onChangeText={(text) => setName(text)}
+				/>
+
+				<Button
+					text="Modifier mon mot de passe"
+					onPress={() => {
+						//
+					}}
+					style={styles.button}
+				/>
+				<Button
+					text="Modifier mon Avatar"
+					onPress={() => {
+						//
+					}}
+					style={styles.button}
+				/>
+				<Button
+					text="Modifier mes informations"
+					onPress={() => {
+						//
+					}}
+					style={styles.button}
+				/>
+				<Button
+					status="danger"
+					text="Déconnexion"
+					onPress={() => {
+						firebase.auth().signOut();
+					}}
+					style={styles.button}
+				/>
+			</View>
+		</Layout>
+	);
 }
 
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		marginTop: 20,
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center"
+	},
+	button: {
+		marginTop: 10,
 
+	}
+});
