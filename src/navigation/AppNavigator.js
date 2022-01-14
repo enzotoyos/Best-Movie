@@ -21,13 +21,13 @@ import { AuthContext } from "../provider/AuthProvider";
 
 // Better put your these secret keys in .env file
 const firebaseConfig = {
-  apiKey: "AIzaSyBmfSkG2wYx9rAwo9OnQVgwQ-dhYt8_YK0",
-  authDomain: "lasa-basket-app-33d0a.firebaseapp.com",
-  projectId: "lasa-basket-app-33d0a",
-  storageBucket: "lasa-basket-app-33d0a.appspot.com",
-  messagingSenderId: "60313752280",
-  appId: "1:60313752280:web:51d14a3211657d69c27dad",
-  measurementId: "G-J5QL87PQCM",
+  apiKey: "AIzaSyC7bv-_wwAPMZthRBKxUeKaC3KyLEvXm_c",
+  authDomain: "best-movie-e1fe8.firebaseapp.com",
+  projectId: "best-movie-e1fe8",
+  storageBucket: "best-movie-e1fe8.appspot.com",
+  messagingSenderId: "199365439320",
+  appId: "1:199365439320:web:ba3410c9d791cdfc03bf2d",
+  measurementId: "G-PPPKCN3VTM",
 };
 
 if (firebase.apps.length === 0) {
