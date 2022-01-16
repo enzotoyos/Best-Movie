@@ -6,6 +6,7 @@ import {
   Image,
   Animated,
   PanResponder,
+  TouchableOpacity,
 } from "react-native";
 import Swiper from "react-native-dynamic-deck-swiper";
 import firebase from "firebase";
@@ -17,7 +18,9 @@ import {
   Section,
   SectionContent,
   useTheme,
+  themeColor,
 } from "react-native-rapi-ui";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
@@ -32,7 +35,7 @@ export default function ({ navigation }) {
           marginHorizontal: 20,
         }}
       >
-        <Section>
+        <Section borderRadius={20}>
           <SectionContent>
             <Text fontWeight="bold" style={styles.section}>
               Créer votre propre collection pour faire vos tests
@@ -53,13 +56,29 @@ export default function ({ navigation }) {
                 {(card) =>
                   card === null ? (
                     <View style={styles.card}>
-                      <Text style={styles.text}>
-                        This is the end of the deck, pal.
-                      </Text>
+                      <Image
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          borderRadius: 30,
+                        }}
+                        source={{
+                          uri: "https://image.tmdb.org/t/p/w500/EnDlndEvw6Ptpp8HIwmRcSSNKQ.jpg",
+                        }}
+                      />
                     </View>
                   ) : (
                     <View style={styles.card}>
-                      <Text style={styles.text}>{card}</Text>
+                      <Image
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          borderRadius: 30,
+                        }}
+                        source={{
+                          uri: "https://image.tmdb.org/t/p/w500/3SyG7dq2q0ollxJ4pSsrqcfRmVj.jpg",
+                        }}
+                      />
                     </View>
                   )
                 }
@@ -72,8 +91,36 @@ export default function ({ navigation }) {
                 padding: 20,
               }}
             >
-              <View style={{ backgroundColor: "blue", flex: 0.5 }} />
-              <View style={{ backgroundColor: "red", flex: 0.5 }} />
+              <View
+                style={{
+                  backgroundColor: "transparent",
+                  flex: 0.5,
+                  alignItems: "center",
+                }}
+              >
+                <TouchableOpacity>
+                  <Ionicons
+                    name="heart-dislike-outline"
+                    size={60}
+                    color={isDarkmode ? themeColor.white100 : themeColor.black}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View
+                style={{
+                  backgroundColor: "transparent",
+                  flex: 0.5,
+                  alignItems: "center",
+                }}
+              >
+                <TouchableOpacity>
+                  <Ionicons
+                    name="heart-outline"
+                    size={60}
+                    color={isDarkmode ? themeColor.white100 : themeColor.black}
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
           </SectionContent>
         </Section>
@@ -88,11 +135,11 @@ const styles = StyleSheet.create({
   },
   card: {
     flex: 1,
-    borderRadius: 1,
+    borderRadius: 5,
     borderWidth: 1,
-    borderColor: "#E8E8E8",
+    borderColor: "transparent",
     justifyContent: "center",
-    backgroundColor: "turquoise",
+    backgroundColor: "transparent",
     marginBottom: 350,
     marginLeft: 1,
     marginRight: "19%",
