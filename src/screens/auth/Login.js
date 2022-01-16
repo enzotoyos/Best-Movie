@@ -5,10 +5,10 @@ import {
   TouchableOpacity,
   View,
   KeyboardAvoidingView,
-  Image,
+  Image
 } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import firebase from "firebase";
-
 import {
   Layout,
   Text,
@@ -29,6 +29,12 @@ export default function ({ navigation }) {
     await firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        // Signed in 
+        const user = userCredential.user;
+        // console.log(user);
+        await AsyncStorage.setItem('uid', user.uid)
+      })
       .catch(function (error) {
         // Handle Errors here.
         var errorCode = error.code;
