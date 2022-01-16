@@ -78,6 +78,19 @@ const MainTabs = () => {
     >
       {/* these icons using Ionicons */}
       <Tabs.Screen
+        name="About"
+        component={About}
+        options={{
+          tabBarLabel: ({ focused }) => (
+            <TabBarText focused={focused} title="Mes films" />
+          ),
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} icon={"film-outline"} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
         name="Home"
         component={Home}
         options={{
@@ -98,18 +111,6 @@ const MainTabs = () => {
           ),
           tabBarIcon: ({ focused }) => (
             <TabBarIcon focused={focused} icon={"person"} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="About"
-        component={About}
-        options={{
-          tabBarLabel: ({ focused }) => (
-            <TabBarText focused={focused} title="À Propos" />
-          ),
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} icon={"ios-information-circle"} />
           ),
         }}
       />

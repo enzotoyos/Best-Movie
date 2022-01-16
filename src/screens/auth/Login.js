@@ -5,9 +5,9 @@ import {
   TouchableOpacity,
   View,
   KeyboardAvoidingView,
-  Image
+  Image,
 } from "react-native";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import firebase from "firebase";
 import {
   Layout,
@@ -24,16 +24,16 @@ export default function ({ navigation }) {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function login() {
+  const login = async () => {
     setLoading(true);
     await firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then((userCredential) => {
-        // Signed in 
+        // Signed in
         const user = userCredential.user;
         // console.log(user);
-        await AsyncStorage.setItem('uid', user.uid)
+        AsyncStorage.setItem("uid", String(user.uid));
       })
       .catch(function (error) {
         // Handle Errors here.
@@ -43,7 +43,7 @@ export default function ({ navigation }) {
         setLoading(false);
         alert(errorMessage);
       });
-  }
+  };
 
   return (
     <KeyboardAvoidingView behavior="height" enabled style={{ flex: 1 }}>
