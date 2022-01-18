@@ -33,7 +33,7 @@ export default function ({ navigation }) {
         // Signed in 
         const user = userCredential.user;
         // console.log(user);
-        await AsyncStorage.setItem('uid', user.uid)
+        AsyncStorage.setItem('uid', String(user.uid));
       })
       .catch(function (error) {
         // Handle Errors here.

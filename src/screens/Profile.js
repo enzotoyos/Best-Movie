@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import {
 	Layout,
@@ -8,9 +8,22 @@ import {
 	Avatar
 } from "react-native-rapi-ui";
 import firebase from "firebase";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ({ navigation }) {
 
+	useEffect(() => {
+		getData()
+	}, []);
+
+	const getData = async () => {
+		try {
+			const uid = await AsyncStorage.getItem('uid');
+			console.log(uid);
+		} catch (e) {
+			// error reading value
+		}
+	}
 	const [email, setEmail] = useState("")
 	const [name, setName] = useState("")
 
@@ -50,7 +63,7 @@ export default function ({ navigation }) {
 				<Button
 					text="Modifier mon mot de passe"
 					onPress={() => {
-						//
+						getData();
 					}}
 					style={styles.button}
 				/>
