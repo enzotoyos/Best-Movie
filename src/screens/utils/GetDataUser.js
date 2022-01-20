@@ -1,44 +1,25 @@
 import firebase from "firebase"
 import "firebase/firestore"
 
-export async function GetNameUser() {
+export async function GetUser() {
   try {
-    const currentUser = await firebase.auth().currentUser
-    const db = await firebase.firestore()
+    const currentUser = firebase.auth().currentUser;
+    const db = firebase.firestore();
 
-    var docRef = db.collection("users").doc(currentUser.uid)
+    var docRef = db.collection("users").doc(currentUser.uid);
 
     docRef.get().then((doc) => {
-        if (doc.exists) {
-            return doc.data().Name
-        } else {
-            console.log("No such document!");
-        }
+      if (doc.exists) {
+        console.log('--------');
+        console.log(doc.data());
+        return doc.data();
+      } else {
+        console.log("No such document!");
+      }
     }).catch((error) => {
-        console.log("Error getting document:", error)
+      console.log("Error getting document:", error);
     })
   } catch (err) {
-    console.log(err.message)
+    console.log(err.message);
   }
 }
-
-export async function GetEmailUser() {
-    try {
-      const currentUser = await firebase.auth().currentUser
-      const db = await firebase.firestore()
-  
-      var docRef = db.collection("users").doc(currentUser.uid);
-  
-      docRef.get().then((doc) => {
-          if (doc.exists) {
-              return doc.data().email
-          } else {
-              console.log("No such document!");
-          }
-      }).catch((error) => {
-          console.log("Error getting document:", error);
-      });
-    } catch (err) {
-      console.log(err.message)
-    }
-  }

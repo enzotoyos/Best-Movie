@@ -23,6 +23,7 @@
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-42.0.0.tar.gz",
+    "react-native-cards-swipe": "^1.0.6",
     "react-native-dynamic-deck-swiper": "0.0.9",
     "react-native-gesture-handler": "~1.10.2",
     "react-native-rapi-ui": "^0.2.1",

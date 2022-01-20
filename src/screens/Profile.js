@@ -1,6 +1,6 @@
-
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { useState, useEffect } from "react";
+import { StyleSheet, View } from "react-native";
+import { GetUser } from "./utils/GetDataUser";
 import {
 	Layout,
 	Text,
@@ -9,8 +9,7 @@ import {
 	Avatar,
 	useTheme,
 } from "react-native-rapi-ui";
-import firebase from "firebase";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ({ navigation }) {
 
@@ -23,27 +22,26 @@ export default function ({ navigation }) {
 
 	const getData = async () => {
 		try {
-			const uid = await AsyncStorage.getItem('uid');
-			console.log(uid);
+			const uid = await AsyncStorage.getItem("uid");
+			const user = await GetUser();
 		} catch (e) {
 			// error reading value
 		}
-	}
-	const [email, setEmail] = useState("")
-	const [name, setName] = useState("")
+	};
+
+	useEffect(() => {
+		getData();
+	}, []);
 
 	return (
 		<Layout>
 			<View style={styles.container}>
 				<Avatar
-					source={require('../../media/avatar.png')}
+					source={require("../../media/avatar.png")}
 					size="xl"
 					shape="round"
 				/>
-				<Text
-					style={styles.button}>
-					{String(name)}
-				</Text>
+				<Text style={styles.button}>{String(name)}</Text>
 
 				<TextInput
 					containerStyle={{ marginTop: 15 }}
@@ -93,6 +91,20 @@ export default function ({ navigation }) {
 						firebase.auth().signOut();
 					}}
 					style={styles.button}
+				/>
+				<Button
+					text={isDarkmode ? "Light Mode" : "Dark Mode"}
+					status={isDarkmode ? "success" : "warning"}
+					onPress={() => {
+						if (isDarkmode) {
+							setTheme("light");
+						} else {
+							setTheme("dark");
+						}
+					}}
+					style={{
+						marginTop: 10,
+					}}
 				/>
 			</View>
 		</Layout>
