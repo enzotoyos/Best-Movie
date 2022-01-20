@@ -50,10 +50,33 @@ export default function ({ navigation }) {
 		setModalVisibleAdmin(!isModalVisibleAdmin);
 		setPasswordReset(false)
 	};
+  Layout,
+  Text,
+  TextInput,
+  Button,
+  Avatar,
+  useTheme,
+} from "react-native-rapi-ui";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import firebase from "firebase";
 
-	useEffect(() => {
-		getData()
-	}, []);
+export default function ({ navigation }) {
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const { isDarkmode, setTheme } = useTheme();
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const getData = async () => {
+    try {
+      const uid = await AsyncStorage.getItem("uid");
+      const user = await GetUser();
+    } catch (e) {
+      // error reading value
+    }
+  };
 
 	const getData = async () => {
 		try {

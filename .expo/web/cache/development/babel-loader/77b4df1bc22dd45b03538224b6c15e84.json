@@ -1,0 +1,1 @@
+{"ast":null,"code":"import CardsSwipe from \"./components/CardsSwipe\";\nexport default CardsSwipe;","map":{"version":3,"sources":["index.tsx"],"names":[],"mappings":"AAAA,OAAA,UAAA;AAEA,eAAA,UAAA","sourcesContent":["import CardsSwipe from './components/CardsSwipe';\n\nexport default CardsSwipe;\n"]},"metadata":{},"sourceType":"module"}

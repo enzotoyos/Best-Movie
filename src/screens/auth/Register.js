@@ -18,29 +18,42 @@ import {
   useTheme,
   themeColor,
 } from "react-native-rapi-ui";
-import { AddUserFirestore } from '../auth/AddUserFirestore'
+import { AddUserFirestore } from "../auth/AddUserFirestore";
 import { SendEmailVerification } from "./SendEmail";
 
 export default function ({ navigation }) {
-  const { isDarkmode, setTheme } = useTheme()
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [name, setName] = useState("")
-  const [loading, setLoading] = useState(false)
-  
-  var userID
-  let user 
+  const { isDarkmode, setTheme } = useTheme();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function SendEmailVerification() {
+    await firebase
+      .auth()
+      .currentUser.sendEmailVerification()
+      .then(() => {
+        alert("Email de vérification envoyé");
+        // ...
+      });
+  }
+
+  var userID;
+  let user;
   async function register() {
     setLoading(true);
     await firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
       .then((userCredential) => {
-       user = userCredential.user
-       userID = user.uid
-        console.log(userID)
-        AddUserFirestore(email,name,userID)
-        setLoading(false)
+        user = userCredential.user;
+        userID = user.uid;
+        console.log(userID);
+        AddUserFirestore(email, name, userID);
+        if (user.emailVerified == false) {
+          SendEmailVerification();
+        }
+        setLoading(false);
       })
       .catch(function (error) {
         // Handle Errors here.
@@ -50,9 +63,6 @@ export default function ({ navigation }) {
         setLoading(false);
         alert(errorMessage);
       });
-      if(user.emailVerified == false){
-        SendEmailVerification()
-      }
   }
 
   return (

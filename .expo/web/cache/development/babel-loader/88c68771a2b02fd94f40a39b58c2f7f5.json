@@ -1,0 +1,1 @@
+{"ast":null,"code":"export default from \"./src/swiper\";","map":{"version":3,"sources":["/Users/enzotoyos/Desktop/Best-Movie/node_modules/react-native-dynamic-deck-swiper/index.js"],"names":["default"],"mappings":"AAAA,OAAOA,OAAP","sourcesContent":["export default from './src/swiper';\n"]},"metadata":{},"sourceType":"module"}
