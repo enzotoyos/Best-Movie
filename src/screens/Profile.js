@@ -12,9 +12,13 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ({ navigation }) {
+
 	const [email, setEmail] = useState("");
 	const [name, setName] = useState("");
-	const { isDarkmode, setTheme } = useTheme();
+
+	useEffect(() => {
+		getData()
+	}, []);
 
 	const getData = async () => {
 		try {
