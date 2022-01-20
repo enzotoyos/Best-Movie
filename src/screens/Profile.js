@@ -1,31 +1,21 @@
 
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
-
 import {
-  Layout,
-  Text,
-  TextInput,
-  Button,
-  Avatar,
-  useTheme,
+	Layout,
+	Text,
+	TextInput,
+	Button,
+	Avatar,
+	useTheme,
 } from "react-native-rapi-ui";
 import firebase from "firebase";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ({ navigation }) {
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const { isDarkmode, setTheme } = useTheme();
-  return (
-    <Layout>
-      <View style={styles.container}>
-        <Avatar
-          source={require("../../media/avatar.png")}
-          size="xl"
-          shape="round"
-        />
-        <Text style={styles.button}>{String(name)}</Text>
+
+	const [email, setEmail] = useState("");
+	const [name, setName] = useState("");
 
 	useEffect(() => {
 		getData()
@@ -110,14 +100,14 @@ export default function ({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: 20,
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  button: {
-    marginTop: 10,
-  },
+	container: {
+		flex: 1,
+		marginTop: 20,
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	button: {
+		marginTop: 10,
+	},
 });
