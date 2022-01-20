@@ -33,8 +33,14 @@ export default function ({ navigation }) {
         // Signed in
         const user = userCredential.user;
         // console.log(user);
-        AsyncStorage.setItem('uid', String(user.uid));
+        AsyncStorage.setItem("uid", String(user.uid));
 
+        if (user.emailVerified == false) {
+          alert("Vous devez vérifier votre Email pour vous connecter");
+          setLoading(false);
+        } else {
+          console.log("User connected");
+        }
       })
       .catch(function (error) {
         // Handle Errors here.

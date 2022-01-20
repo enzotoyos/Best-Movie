@@ -21,6 +21,7 @@ import {
   themeColor,
 } from "react-native-rapi-ui";
 import { Ionicons } from "@expo/vector-icons";
+import CardsSwipe from "react-native-cards-swipe";
 
 export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
