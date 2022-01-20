@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, TouchableOpacity, ScrollView } from "react-native";
 import { GetUser } from "./utils/GetDataUser";
 import {
 	Layout,
@@ -7,14 +7,21 @@ import {
 	TextInput,
 	Button,
 	Avatar,
+	Section,
+	SectionContent,
+	themeColor,
 	useTheme,
 } from "react-native-rapi-ui";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Ionicons } from "@expo/vector-icons";
+import { color } from "react-native-reanimated";
 
 export default function ({ navigation }) {
 
 	const [email, setEmail] = useState("");
 	const [name, setName] = useState("");
+	const { isDarkmode, setTheme } = useTheme();
+	const onPress = () => console.log('Pressed');
 
 	useEffect(() => {
 		getData()
@@ -24,8 +31,11 @@ export default function ({ navigation }) {
 		try {
 			const uid = await AsyncStorage.getItem("uid");
 			const user = await GetUser();
+			setEmail(user.email);
+			setName(user.Name);
 		} catch (e) {
 			// error reading value
+			console.log(e);
 		}
 	};
 
@@ -35,91 +45,119 @@ export default function ({ navigation }) {
 
 	return (
 		<Layout>
-			<View style={styles.container}>
-				<Avatar
-					source={require("../../media/avatar.png")}
-					size="xl"
-					shape="round"
-				/>
-				<Text style={styles.button}>{String(name)}</Text>
+			<View style={styles.view}>
+				<View style={styles.topContainer}>
+					<Section style={styles.card}>
+						<SectionContent>
+							<Avatar
+								source={require("../../media/avatar.png")}
+								size="xl"
+								shape="round"
+							/>
+							<Text style={{ margin: 5 }}>{String(name)}</Text>
+						</SectionContent>
+					</Section>
+				</View>
+				<View style={{flex: 0.2}}>
 
-				<TextInput
-					containerStyle={{ marginTop: 15 }}
-					placeholder="mail"
-					value={email}
-					autoCapitalize="none"
-					autoCompleteType="off"
-					autoCorrect={false}
-					keyboardType="email-address"
-					onChangeText={(text) => setEmail(text)}
-				/>
-				<TextInput
-					containerStyle={{ marginTop: 15 }}
-					placeholder="identifiant"
-					value={name}
-					autoCapitalize="none"
-					autoCompleteType="off"
-					autoCorrect={false}
-					onChangeText={(text) => setName(text)}
-				/>
+				</View>
+				<View style={styles.view}>
+					<TouchableOpacity style={styles.button}
+						onPress={() => {
+							isDarkmode ? setTheme("light") : setTheme("dark");
+						}}
+					>
+						<Ionicons
+							name={isDarkmode ? "sunny-outline" : "moon-outline"}
+							size={30}
+							color={isDarkmode ? themeColor.white100 : themeColor.black}
+							style={styles.icon}
+						/>
+						<Text>
+							{isDarkmode ? "Mode Clair" : "Mode Sombre"}
+						</Text>
+					</TouchableOpacity>
 
-				<Button
-					text="Modifier mon mot de passe"
-					onPress={() => {
-						getData();
-					}}
-					style={styles.button}
-				/>
-				<Button
-					text="Modifier mon Avatar"
-					onPress={() => {
-						//
-					}}
-					style={styles.button}
-				/>
-				<Button
-					text="Modifier mes informations"
-					onPress={() => {
-						//
-					}}
-					style={styles.button}
-				/>
-				<Button
-					status="danger"
-					text="Déconnexion"
-					onPress={() => {
+					<TouchableOpacity style={styles.button} onPress={onPress}>
+						<Ionicons
+							name="document-text-outline"
+							size={30}
+							color={isDarkmode ? themeColor.white100 : themeColor.black}
+							style={styles.icon}
+						/>
+						<Text>Modifier mon pseudo</Text>
+					</TouchableOpacity>
+
+					<TouchableOpacity style={styles.button} onPress={onPress}>
+						<Ionicons
+							name="person-circle-outline"
+							size={30}
+							color={isDarkmode ? themeColor.white100 : themeColor.black}
+							style={styles.icon}
+						/>
+						<Text>Modifier mon avatar</Text>
+					</TouchableOpacity>
+
+					<TouchableOpacity style={styles.button} onPress={onPress}>
+						<Ionicons
+							name="mail-outline"
+							size={30}
+							color={isDarkmode ? themeColor.white100 : themeColor.black}
+							style={styles.icon}
+						/>
+						<Text>Modifier mon email</Text>
+					</TouchableOpacity>
+
+					<TouchableOpacity style={styles.button} onPress={onPress}>
+						<Ionicons
+							name="lock-closed-outline"
+							size={30}
+							color={isDarkmode ? themeColor.white100 : themeColor.black}
+							style={styles.icon}
+						/>
+						<Text>Modifier mon mot de passe</Text>
+					</TouchableOpacity>
+
+					<TouchableOpacity style={[styles.button]} onPress={() => {
 						firebase.auth().signOut();
-					}}
-					style={styles.button}
-				/>
-				<Button
-					text={isDarkmode ? "Light Mode" : "Dark Mode"}
-					status={isDarkmode ? "success" : "warning"}
-					onPress={() => {
-						if (isDarkmode) {
-							setTheme("light");
-						} else {
-							setTheme("dark");
-						}
-					}}
-					style={{
-						marginTop: 10,
-					}}
-				/>
+					}}>
+						<Ionicons
+							name="log-out-outline"
+							size={30}
+							color="#d75724"
+							style={styles.icon}
+						/>
+						<Text style={{ color: "#d75724" }}>Déconnexion</Text>
+					</TouchableOpacity>
+				</View>
 			</View>
 		</Layout>
 	);
 }
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		marginTop: 20,
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
+	card: {
+		alignItems: 'center',
+		margin: 20,
+	},
+	topContainer: {
+		flex: 0.2,
+		backgroundColor: '#3366ff',
 	},
 	button: {
-		marginTop: 10,
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: "flex-start",
+		padding: 10,
+		marginLeft: 20,
+		marginRight: 20,
+		marginTop: 5,
+		borderRadius: 10
 	},
+	icon: {
+		marginRight: 20
+	},
+	view: {
+		flex: 1
+	}
 });

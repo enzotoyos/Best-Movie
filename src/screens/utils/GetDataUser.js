@@ -7,18 +7,8 @@ export async function GetUser() {
     const db = firebase.firestore();
 
     var docRef = db.collection("users").doc(currentUser.uid);
-
-    docRef.get().then((doc) => {
-      if (doc.exists) {
-        console.log('--------');
-        console.log(doc.data());
-        return doc.data();
-      } else {
-        console.log("No such document!");
-      }
-    }).catch((error) => {
-      console.log("Error getting document:", error);
-    })
+    const result = await docRef.get();
+    return result.data();
   } catch (err) {
     console.log(err.message);
   }
