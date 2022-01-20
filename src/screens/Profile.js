@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, TouchableOpacity, ScrollView } from "react-native";
-import { GetUser } from "./utils/GetDataUser";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
+import Modal from "react-native-modal";
+import { GetUser, updateUser, updateEmail, updatePassword, signOut } from "./utils/GetDataUser";
+import Toast from 'react-native-toast-message';
 import {
 	Layout,
 	Text,
@@ -14,14 +16,40 @@ import {
 } from "react-native-rapi-ui";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
-import { color } from "react-native-reanimated";
 
 export default function ({ navigation }) {
-
-	const [email, setEmail] = useState("");
-	const [name, setName] = useState("");
 	const { isDarkmode, setTheme } = useTheme();
-	const onPress = () => console.log('Pressed');
+
+	const [user, setUser] = useState({});
+	const [name, setName] = useState("");
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+
+	const [newEmail, setNewEmail] = useState("");
+	const [newPassword, setNewPassword] = useState("");
+	const [newPasswordBis, setNewPasswordBis] = useState("");
+
+	const [isModalVisible, setModalVisible] = useState(false);
+	const [isModalVisibleAdmin, setModalVisibleAdmin] = useState(false);
+	const [isPasswordReset, setPasswordReset] = useState(false);
+
+	const toggleModal = () => {
+		setModalVisible(!isModalVisible);
+	};
+	const togglePassword = () => {
+		setNewEmail("");
+		setPassword("");
+		setNewPassword("");
+		setNewPasswordBis("");
+		setModalVisibleAdmin(!isModalVisibleAdmin);
+		setPasswordReset(true)
+	};
+	const toggleEmail = () => {
+		setNewEmail("");
+		setPassword("");
+		setModalVisibleAdmin(!isModalVisibleAdmin);
+		setPasswordReset(false)
+	};
 
 	useEffect(() => {
 		getData()
@@ -29,22 +57,199 @@ export default function ({ navigation }) {
 
 	const getData = async () => {
 		try {
-			const uid = await AsyncStorage.getItem("uid");
 			const user = await GetUser();
+			setUser(user);
 			setEmail(user.email);
 			setName(user.Name);
 		} catch (e) {
-			// error reading value
 			console.log(e);
 		}
 	};
+	const onSave = async () => {
+		user.Name = name;
+		const result = await updateUser(user);
+		if (result) {
+			getData();
+			toggleModal();
+			Toast.show({
+				type: 'success',
+				text1: 'Enregistrement réussi',
+				text2: 'La modificaition a été enregistré !'
+			});
+		}
+	};
+	const onSaveAdmin = async () => {
+		if (email && password) {
 
-	useEffect(() => {
-		getData();
-	}, []);
+			if (isPasswordReset) {
+				if ((newPassword && newPassword !== "") && (newPassword === newPasswordBis)) {
+					const result = await updatePassword(email, password, newPassword);
+					if (result) {
+						setModalVisibleAdmin(false);
+						Toast.show({
+							type: 'success',
+							text1: 'Le mot de passe a bien été modifié',
+							text2: 'Votre mot de passe a été changé.'
+						});
+					}
+				} else {
+					setModalVisibleAdmin(false);
+					Toast.show({
+						type: 'error',
+						text1: 'Mot de passe incorrect',
+						text2: 'Les deux mots de passe doivent être les mêmes.'
+					});
+				}
+			} else {
+				const result = await updateEmail(email, password, newEmail);
+				if (result) {
+					setModalVisibleAdmin(false);
+					getData();
+					Toast.show({
+						type: 'success',
+						text1: 'L\'email a bien été modifié',
+						text2: 'Votre email a été modifié.'
+					});
+				}
+			}
+		} else {
+			setModalVisibleAdmin(false);
+			Toast.show({
+				type: 'error',
+				text1: 'Saisie incorrect',
+				text2: 'Vous devez remplir tous les champs.'
+			});
+		}
+	};
 
 	return (
 		<Layout>
+			<Modal isVisible={isModalVisible}>
+				<View style={[styles.modal, { backgroundColor: isDarkmode ? themeColor.black : themeColor.white100 }]}>
+					<Text size="h2" fontWeight="medium" status="primary">Changer votre pseudo</Text>
+
+					<TextInput
+						containerStyle={{ marginTop: 15 }}
+						placeholder="Entez votre Pseudo"
+						value={name}
+						autoCapitalize="none"
+						autoCompleteType="off"
+						autoCorrect={false}
+						onChangeText={(text) => setName(text)}
+					/>
+
+					<View style={{ flexDirection: "row" }}>
+						<View style={{ flex: 0.5 }}>
+							<TouchableOpacity style={[styles.modalButton, { backgroundColor: "#3366ff" }]} onPress={onSave}>
+								<Ionicons
+									name="save-outline"
+									size={30}
+									color={themeColor.white100}
+									style={styles.icon}
+								/>
+								<Text style={{ color: themeColor.white100 }}>Enregistrer</Text>
+							</TouchableOpacity>
+						</View>
+						<View style={{ flex: 0.5 }} >
+							<TouchableOpacity style={[styles.modalButton, { backgroundColor: "#b6b6b6" }]} onPress={toggleModal}>
+								<Ionicons
+									name="close-circle-outline"
+									size={30}
+									color={themeColor.white100}
+									style={styles.icon}
+								/>
+								<Text style={{ color: themeColor.white100 }}>Fermer</Text>
+							</TouchableOpacity>
+						</View>
+					</View>
+				</View>
+			</Modal>
+			<Modal isVisible={isModalVisibleAdmin}>
+				<View style={[styles.modal, { backgroundColor: isDarkmode ? themeColor.black : themeColor.white100 }]}>
+					<Text size="h2" fontWeight="medium" status="primary">Changer vos identifiants</Text>
+
+					<TextInput
+						containerStyle={{ marginTop: 15 }}
+						placeholder="Entez votre Email"
+						value={email}
+						autoCapitalize="none"
+						autoCompleteType="off"
+						autoCorrect={false}
+						keyboardType="email-address"
+						onChangeText={(text) => setEmail(text)}
+					/>
+					<TextInput
+						containerStyle={{ marginTop: 15 }}
+						placeholder="Entez votre Mot de passe"
+						value={password}
+						autoCapitalize="none"
+						autoCompleteType="off"
+						autoCorrect={false}
+						secureTextEntry={true}
+						onChangeText={(text) => setPassword(text)}
+					/>
+					<View style={{ display: !isPasswordReset ? "flex" : "none" }}>
+						<TextInput
+							containerStyle={{ marginTop: 15 }}
+							placeholder="Entrer la nouvelle adresse Email"
+							value={newEmail}
+							autoCapitalize="none"
+							autoCompleteType="off"
+							autoCorrect={false}
+							keyboardType="email-address"
+							onChangeText={(text) => setNewEmail(text)}
+						/>
+					</View>
+					<View style={{ display: isPasswordReset ? "flex" : "none" }}>
+						<TextInput
+							containerStyle={{ marginTop: 15 }}
+							placeholder="Entrer le nouveau mot de passe"
+							value={newPassword}
+							autoCapitalize="none"
+							autoCompleteType="off"
+							autoCorrect={false}
+							secureTextEntry={true}
+							onChangeText={(text) => setNewPassword(text)}
+						/>
+						<TextInput
+							containerStyle={{ marginTop: 15 }}
+							placeholder="Confirmer le nouveau mot de passe"
+							value={newPasswordBis}
+							autoCapitalize="none"
+							autoCompleteType="off"
+							autoCorrect={false}
+							secureTextEntry={true}
+							onChangeText={(text) => setNewPasswordBis(text)}
+						/>
+					</View>
+
+					<View style={{ flexDirection: "row" }}>
+						<View style={{ flex: 0.5 }}>
+							<TouchableOpacity style={[styles.modalButton, { backgroundColor: "#3366ff" }]} onPress={onSaveAdmin}>
+								<Ionicons
+									name="save-outline"
+									size={30}
+									color={themeColor.white100}
+									style={styles.icon}
+								/>
+								<Text style={{ color: themeColor.white100 }}>Enregistrer</Text>
+							</TouchableOpacity>
+						</View>
+						<View style={{ flex: 0.5 }} >
+							<TouchableOpacity style={[styles.modalButton, { backgroundColor: "#b6b6b6" }]} onPress={toggleEmail}>
+								<Ionicons
+									name="close-circle-outline"
+									size={30}
+									color={themeColor.white100}
+									style={styles.icon}
+								/>
+								<Text style={{ color: themeColor.white100 }}>Fermer</Text>
+							</TouchableOpacity>
+						</View>
+					</View>
+				</View>
+			</Modal>
+
 			<View style={styles.view}>
 				<View style={styles.topContainer}>
 					<Section style={styles.card}>
@@ -54,11 +259,11 @@ export default function ({ navigation }) {
 								size="xl"
 								shape="round"
 							/>
-							<Text style={{ margin: 5 }}>{String(name)}</Text>
+							<Text style={{ margin: 5 }}>{String(user.Name)}</Text>
 						</SectionContent>
 					</Section>
 				</View>
-				<View style={{flex: 0.2}}>
+				<View style={{ flex: 0.2 }}>
 
 				</View>
 				<View style={styles.view}>
@@ -78,7 +283,7 @@ export default function ({ navigation }) {
 						</Text>
 					</TouchableOpacity>
 
-					<TouchableOpacity style={styles.button} onPress={onPress}>
+					<TouchableOpacity style={styles.button} onPress={toggleModal}>
 						<Ionicons
 							name="document-text-outline"
 							size={30}
@@ -88,7 +293,7 @@ export default function ({ navigation }) {
 						<Text>Modifier mon pseudo</Text>
 					</TouchableOpacity>
 
-					<TouchableOpacity style={styles.button} onPress={onPress}>
+					<TouchableOpacity style={styles.button} onPress={onSave}>
 						<Ionicons
 							name="person-circle-outline"
 							size={30}
@@ -98,7 +303,7 @@ export default function ({ navigation }) {
 						<Text>Modifier mon avatar</Text>
 					</TouchableOpacity>
 
-					<TouchableOpacity style={styles.button} onPress={onPress}>
+					<TouchableOpacity style={styles.button} onPress={toggleEmail}>
 						<Ionicons
 							name="mail-outline"
 							size={30}
@@ -108,7 +313,7 @@ export default function ({ navigation }) {
 						<Text>Modifier mon email</Text>
 					</TouchableOpacity>
 
-					<TouchableOpacity style={styles.button} onPress={onPress}>
+					<TouchableOpacity style={styles.button} onPress={togglePassword}>
 						<Ionicons
 							name="lock-closed-outline"
 							size={30}
@@ -118,9 +323,7 @@ export default function ({ navigation }) {
 						<Text>Modifier mon mot de passe</Text>
 					</TouchableOpacity>
 
-					<TouchableOpacity style={[styles.button]} onPress={() => {
-						firebase.auth().signOut();
-					}}>
+					<TouchableOpacity style={styles.button} onPress={signOut}>
 						<Ionicons
 							name="log-out-outline"
 							size={30}
@@ -139,6 +342,14 @@ const styles = StyleSheet.create({
 	card: {
 		alignItems: 'center',
 		margin: 20,
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 8,
+		},
+		shadowOpacity: 0.44,
+		shadowRadius: 10.32,
+		elevation: 16
 	},
 	topContainer: {
 		flex: 0.2,
@@ -155,9 +366,23 @@ const styles = StyleSheet.create({
 		borderRadius: 10
 	},
 	icon: {
-		marginRight: 20
+		marginRight: 10
 	},
 	view: {
 		flex: 1
+	},
+	modal: {
+		padding: 15,
+		borderRadius: 10
+	},
+	modalButton: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: "flex-start",
+		padding: 10,
+		marginLeft: 5,
+		marginRight: 5,
+		marginTop: 15,
+		borderRadius: 10
 	}
 });
