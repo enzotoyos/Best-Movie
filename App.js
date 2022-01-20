@@ -2,6 +2,7 @@ import React from "react";
 import AppNavigator from "./src/navigation/AppNavigator";
 import { AuthProvider } from "./src/provider/AuthProvider";
 import { ThemeProvider } from "react-native-rapi-ui";
+import Toast from 'react-native-toast-message';
 
 export default function App() {
   const images = [
@@ -15,6 +16,7 @@ export default function App() {
     <ThemeProvider images={images}>
       <AuthProvider>
         <AppNavigator />
+        <Toast />
       </AuthProvider>
     </ThemeProvider>
   );
