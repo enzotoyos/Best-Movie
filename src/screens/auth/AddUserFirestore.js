@@ -1,20 +1,19 @@
-import firebase from "firebase"
-import "firebase/firestore"
+import firebase from "firebase";
+import "firebase/firestore";
 
 export async function AddUserFirestore(email, name, uid) {
   try {
     const db = firebase.firestore();
-    db.collection("users")
-      .doc(uid)
-      .set({
-        email: email,
-        Name: name,
-        CreatedAt: Date.now(),
-        Status: "Active",
-        ModifiedAt: Date.now()
-      });
+    db.collection("users").doc(uid).set({
+      email: email,
+      Name: name,
+      CreatedAt: Date.now(),
+      Status: "Active",
+      ModifiedAt: Date.now(),
+    });
+    db.collection("liked_films").doc(uid).set({ movie: [] });
+    db.collection("unliked_films").doc(uid).set({ movie: [] });
   } catch (err) {
-    console.log(err.message)
+    console.log(err.message);
   }
 }
-

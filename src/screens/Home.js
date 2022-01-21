@@ -22,8 +22,12 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import Swiper from "react-native-deck-swiper";
 import { discoveryFilms } from "../API/index";
+import { pushFilmsOnFirestore } from "../screens/utils/pushFilmsFirestore";
 
 export default function ({ navigation }) {
+  let idCard;
+  let posterPath;
+  let title;
   const { isDarkmode, setTheme } = useTheme();
   const [movieList, setMovieList] = useState([]);
 
@@ -40,6 +44,28 @@ export default function ({ navigation }) {
     if (!isLoad) {
       return <Text>Loading</Text>;
     }
+  };
+
+  const onSwipeRight = async (cardID, posterURL, movieTitle) => {
+    const currentUser = firebase.auth().currentUser;
+    await pushFilmsOnFirestore(
+      currentUser.uid,
+      true,
+      cardID,
+      posterURL,
+      movieTitle
+    );
+  };
+
+  const onSwipeLeft = async (cardID, posterURL, movieTitle) => {
+    const currentUser = firebase.auth().currentUser;
+    await pushFilmsOnFirestore(
+      currentUser.uid,
+      false,
+      cardID,
+      posterURL,
+      movieTitle
+    );
   };
 
   return (
@@ -62,6 +88,9 @@ export default function ({ navigation }) {
               if (!card) {
                 return <View style={styles.loading}>{setLoading(true)}</View>;
               } else {
+                idCard = card.id;
+                posterPath = card.poster_path;
+                title = card.original_title;
                 return (
                   <View style={styles.card}>
                     <Text style={styles.originalTtile}>
@@ -78,12 +107,14 @@ export default function ({ navigation }) {
                 );
               }
             }}
-            onSwiped={(cardIndex) => {
-              console.log(cardIndex);
+            onSwiped={(movieList) => {
+              console.log(movieList);
             }}
             onSwipedAll={() => {
               console.log("onSwipedAll");
             }}
+            onSwipedLeft={() => onSwipeLeft(idCard, posterPath, title)} // si on swipe à gauche on appelle la fonction et on donne l'id du film swiper
+            onSwipedRight={() => onSwipeRight(idCard, posterPath, title)} // idem à droite
             cardIndex={0}
             backgroundColor={"transparent"}
             stackSize={3}
@@ -124,5 +155,6 @@ const styles = StyleSheet.create({
   },
   originalTtile: {
     textAlign: "center",
+    marginBottom: "1%",
   },
 });

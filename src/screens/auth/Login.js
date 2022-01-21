@@ -26,6 +26,15 @@ export default function ({ navigation }) {
 
   const login = async () => {
     setLoading(true);
+    if (email.length == 0) {
+      alert("Email non renseigné");
+      setLoading(false);
+      return null;
+    } else if (password == 0) {
+      alert("mot de passe non renseigné");
+      setLoading(false);
+      return null;
+    }
     await firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
@@ -48,7 +57,7 @@ export default function ({ navigation }) {
         var errorMessage = error.message;
         // ...
         setLoading(false);
-        alert(errorMessage);
+        alert("Adresse mail ou mot de passe incorrect");
       });
   };
 
