@@ -59,39 +59,39 @@ export default function ({ navigation }) {
 	}, []);
 
 	const setAvatar = () => {
-		// if (selectedImage !== null) {
-		// 	return (
-		// 		<Avatar
-		// 			source={{ uri: selectedImage.localUri }}
-		// 			size="xl"
-		// 			shape="round"
-		// 		/>
-		// 	);
-		// } else {
-		// 	return (
-		// 		<Avatar
-		// 			source={require("../../media/avatar.png")}
-		// 			size="xl"
-		// 			shape="round"
-		// 		/>
-		// 	);
-		// }
-
 		if (selectedImage !== null) {
 			return (
-				<Image
+				<Avatar
 					source={{ uri: selectedImage.uri }}
-					style={styles.thumbnail}
+					size="xl"
+					shape="round"
 				/>
 			);
 		} else {
 			return (
-				<Image
+				<Avatar
 					source={require("../../media/avatar.png")}
-					style={styles.thumbnail}
+					size="xl"
+					shape="round"
 				/>
 			);
 		}
+
+		// if (selectedImage !== null) {
+		// 	return (
+		// 		<Image
+		// 			source={{ uri: selectedImage.uri }}
+		// 			style={styles.thumbnail}
+		// 		/>
+		// 	);
+		// } else {
+		// 	return (
+		// 		<Image
+		// 			source={require("../../media/avatar.png")}
+		// 			style={styles.thumbnail}
+		// 		/>
+		// 	);
+		// }
 	};
 
 	const getData = async () => {
