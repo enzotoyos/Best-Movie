@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -21,27 +21,38 @@ import {
 } from "react-native-rapi-ui";
 import { Ionicons } from "@expo/vector-icons";
 import Swiper from "react-native-deck-swiper";
+import { discoveryFilms } from "../API/index";
 
 export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
+  const { movieList, setMovieList } = useState([]);
+  const { isDataReturned, setDataIsReturned } = useState(false);
 
-  return (
-    <Layout>
-      <Text fontWeight="bold" style={styles.section}>
-        Créer votre propre collection pour faire vos tests
-      </Text>
-      <View style={styles.container}>
-        <View
-          style={{
-            flex: 1,
-            alignItems: "center",
-            marginBottom: 60,
-            backgroundColor: "transparent",
-          }}
-        >
+  useEffect(() => {
+    getDataMovie();
+  }, []);
+
+  // useEffect(() => {
+  //   if (movieList && movieList.lenght > 0) {
+  //     setDataIsReturned(true);
+  //   } else {
+  //     setDataIsReturned(false);
+  //   }
+  // }, [movieList.length]);
+
+  const getDataMovie = async () => {
+    const result = await discoveryFilms();
+    setMovieList(result.results);
+    console.log(movieList);
+  };
+
+  const renderCard = async () => {
+    if (dataIsReturned === true) {
+      return (
+        <View style={styles.container}>
           <Swiper
-            cards={["DO", "MORE", "OF", "WHAT", "MAKES", "YOU", "HAPPY"]}
-            renderCard={(card) => {
+            cards={renderCard()}
+            renderCard={() => {
               return (
                 <View style={styles.card}>
                   <Image
@@ -61,6 +72,28 @@ export default function ({ navigation }) {
             backgroundColor={"transparent"}
             stackSize={3}
           ></Swiper>
+        </View>
+      );
+    } else {
+      return <Text>Loading</Text>;
+    }
+  };
+
+  return (
+    <Layout>
+      <Text fontWeight="bold" style={styles.title}>
+        Créer votre propre collection pour faire vos tests
+      </Text>
+      <View style={styles.container}>
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            marginBottom: 60,
+            backgroundColor: "transparent",
+          }}
+        >
+          {renderCard()}
         </View>
       </View>
       <View
@@ -127,5 +160,8 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     width: "100%",
     height: "100%",
+  },
+  title: {
+    textAlign: "center",
   },
 });
