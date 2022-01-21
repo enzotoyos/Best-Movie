@@ -25,57 +25,25 @@ import { discoveryFilms } from "../API/index";
 
 export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
-  const { movieList, setMovieList } = useState([]);
-  const { isDataReturned, setDataIsReturned } = useState(false);
-
+  const [movieList, setMovieList] = useState([]);
+  const [filmLike, setMovieList] = useState([]);
+  const [filmDislike, setMovieList] = useState([]);
+  
   useEffect(() => {
     getDataMovie();
   }, []);
 
-  // useEffect(() => {
-  //   if (movieList && movieList.lenght > 0) {
-  //     setDataIsReturned(true);
-  //   } else {
-  //     setDataIsReturned(false);
-  //   }
-  // }, [movieList.length]);
-
   const getDataMovie = async () => {
     const result = await discoveryFilms();
     setMovieList(result.results);
-    console.log(movieList);
   };
 
-  const renderCard = async () => {
-    if (dataIsReturned === true) {
+  const setLoading = (isLoad) => {
+    if (!isLoad) {
       return (
-        <View style={styles.container}>
-          <Swiper
-            cards={renderCard()}
-            renderCard={() => {
-              return (
-                <View style={styles.card}>
-                  <Image
-                    style={styles.image}
-                    source={require("../../assets/1.jpg")}
-                  />
-                </View>
-              );
-            }}
-            onSwiped={(cardIndex) => {
-              console.log(cardIndex);
-            }}
-            onSwipedAll={() => {
-              console.log("onSwipedAll");
-            }}
-            cardIndex={0}
-            backgroundColor={"transparent"}
-            stackSize={3}
-          ></Swiper>
-        </View>
-      );
-    } else {
-      return <Text>Loading</Text>;
+        <Text>
+          Loading
+        </Text>);
     }
   };
 
@@ -93,7 +61,37 @@ export default function ({ navigation }) {
             backgroundColor: "transparent",
           }}
         >
-          {renderCard()}
+          <Swiper
+            cards={movieList}
+            renderCard={(card) => {
+              if (!card) {
+                return (
+                  <View style={styles.loading}>
+                    {setLoading(true)}
+                  </View>)
+              }
+              else {
+                return (
+                  <View style={styles.card}>
+                    <Text>{card.original_title}</Text>
+                    <Image
+                      style={styles.image}
+                      source={{ uri: "https://image.tmdb.org/t/p/w500" + card.poster_path }}
+                    />
+                  </View>
+                );
+              }
+            }}
+            onSwiped={(cardIndex) => {
+              console.log(cardIndex);
+            }}
+            onSwipedAll={() => {
+              console.log("onSwipedAll");
+            }}
+            cardIndex={0}
+            backgroundColor={"transparent"}
+            stackSize={3}
+          />
         </View>
       </View>
       <View
