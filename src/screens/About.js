@@ -7,12 +7,6 @@ import Swiper from "react-native-deck-swiper";
 export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
 
-  const getFilms = async () => {
-    await discoveryFilms();
-  };
-
-  getFilms();
-
   return (
     <Layout>
       <View
@@ -23,28 +17,7 @@ export default function ({ navigation }) {
           backgroundColor: "transparent",
         }}
       >
-        <Swiper
-          cards={["DO", "MORE", "OF", "WHAT", "MAKES", "YOU", "HAPPY"]}
-          renderCard={(card) => {
-            return (
-              <View style={styles.card}>
-                <Image
-                  style={styles.image}
-                  source={require("../../assets/1.jpg")}
-                />
-              </View>
-            );
-          }}
-          onSwiped={(cardIndex) => {
-            console.log(cardIndex);
-          }}
-          onSwipedAll={() => {
-            console.log("onSwipedAll");
-          }}
-          cardIndex={0}
-          backgroundColor={"transparent"}
-          stackSize={3}
-        ></Swiper>
+        <Text style={styles.title}>Votre collection</Text>
       </View>
     </Layout>
   );
@@ -73,5 +46,10 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     width: "100%",
     height: "100%",
+  },
+  title: {
+    textAlign: "center",
+    fontSize: 20,
+    marginTop: "5%",
   },
 });

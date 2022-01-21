@@ -26,9 +26,7 @@ import { discoveryFilms } from "../API/index";
 export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
   const [movieList, setMovieList] = useState([]);
-  const [filmLike, setMovieList] = useState([]);
-  const [filmDislike, setMovieList] = useState([]);
-  
+
   useEffect(() => {
     getDataMovie();
   }, []);
@@ -40,17 +38,14 @@ export default function ({ navigation }) {
 
   const setLoading = (isLoad) => {
     if (!isLoad) {
-      return (
-        <Text>
-          Loading
-        </Text>);
+      return <Text>Loading</Text>;
     }
   };
 
   return (
     <Layout>
       <Text fontWeight="bold" style={styles.title}>
-        Créer votre propre collection pour faire vos tests
+        Créer votre propre collection
       </Text>
       <View style={styles.container}>
         <View
@@ -65,18 +60,19 @@ export default function ({ navigation }) {
             cards={movieList}
             renderCard={(card) => {
               if (!card) {
-                return (
-                  <View style={styles.loading}>
-                    {setLoading(true)}
-                  </View>)
-              }
-              else {
+                return <View style={styles.loading}>{setLoading(true)}</View>;
+              } else {
                 return (
                   <View style={styles.card}>
-                    <Text>{card.original_title}</Text>
+                    <Text style={styles.originalTtile}>
+                      {card.original_title}
+                    </Text>
                     <Image
                       style={styles.image}
-                      source={{ uri: "https://image.tmdb.org/t/p/w500" + card.poster_path }}
+                      source={{
+                        uri:
+                          "https://image.tmdb.org/t/p/w500" + card.poster_path,
+                      }}
                     />
                   </View>
                 );
@@ -92,44 +88,6 @@ export default function ({ navigation }) {
             backgroundColor={"transparent"}
             stackSize={3}
           />
-        </View>
-      </View>
-      <View
-        style={{
-          flexDirection: "row",
-          height: 100,
-          padding: 20,
-        }}
-      >
-        <View
-          style={{
-            backgroundColor: "transparent",
-            flex: 0.5,
-            alignItems: "center",
-          }}
-        >
-          <TouchableOpacity>
-            <Ionicons
-              name="heart-dislike-outline"
-              size={60}
-              color={isDarkmode ? themeColor.white100 : themeColor.black}
-            />
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            backgroundColor: "transparent",
-            flex: 0.5,
-            alignItems: "center",
-          }}
-        >
-          <TouchableOpacity>
-            <Ionicons
-              name="heart-outline"
-              size={60}
-              color={isDarkmode ? themeColor.white100 : themeColor.black}
-            />
-          </TouchableOpacity>
         </View>
       </View>
     </Layout>
@@ -160,6 +118,11 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   title: {
+    marginTop: "5%",
+    textAlign: "center",
+    fontSize: 20,
+  },
+  originalTtile: {
     textAlign: "center",
   },
 });
