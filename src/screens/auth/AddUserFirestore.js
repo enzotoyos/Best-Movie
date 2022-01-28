@@ -3,13 +3,15 @@ import "firebase/firestore";
 
 export async function AddUserFirestore(email, name, uid) {
   try {
+    console.log();
     const db = firebase.firestore();
-    db.collection("users").doc(user.uid).set({
+    db.collection("users").doc(uid).set({
       email: email,
       Name: name,
       CreatedAt: Date.now(),
       Status: "Active",
       ModifiedAt: Date.now(),
+      currentPage: 1
     });
     db.collection("liked_films").doc(uid).set({ movie: [] });
     db.collection("unliked_films").doc(uid).set({ movie: [] });

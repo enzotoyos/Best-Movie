@@ -31,25 +31,27 @@ export default function ({ navigation }) {
     }
   };
 
-  const onSwipeRight = async (cardID, posterURL, movieTitle) => {
+  const onSwipeRight = async (cardIndex) => {
     const currentUser = firebase.auth().currentUser;
+    const movie = movieList[cardIndex];
     await pushFilmsOnFirestore(
       currentUser.uid,
       true,
-      cardID,
-      posterURL,
-      movieTitle
+      movie.id,
+      movie.poster_path,
+      movie.title
     );
   };
 
-  const onSwipeLeft = async (cardID, posterURL, movieTitle) => {
+  const onSwipeLeft = async (cardIndex) => {
     const currentUser = firebase.auth().currentUser;
+    const movie = movieList[cardIndex];
     await pushFilmsOnFirestore(
       currentUser.uid,
       false,
-      cardID,
-      posterURL,
-      movieTitle
+      movie.id,
+      movie.poster_path,
+      movie.title
     );
   };
 
@@ -93,14 +95,16 @@ export default function ({ navigation }) {
                 );
               }
             }}
-            onSwiped={(movieList) => {
-              console.log(movieList);
+            onSwiped={(cardIndex) => {
+              // console.log(cardIndex);
             }}
             onSwipedAll={() => {
               console.log("onSwipedAll");
             }}
-            onSwipedLeft={() => onSwipeLeft(idCard, posterPath, title)} // si on swipe à gauche on appelle la fonction et on donne l'id du film swiper
-            onSwipedRight={() => onSwipeRight(idCard, posterPath, title)} // idem à droite
+            onSwipedLeft={(cardIndex) => onSwipeLeft(cardIndex)}
+            onSwipedRight={(cardIndex) => {
+              onSwipeRight(cardIndex)
+            }} // idem à droite
             cardIndex={0}
             backgroundColor={"transparent"}
             stackSize={3}

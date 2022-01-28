@@ -41,6 +41,7 @@ export default function ({ navigation }) {
           type: 'info',
           text1: 'Email de vérification envoyé'
         });
+        navigation.navigate('login');
       });
   }
 
@@ -148,7 +149,7 @@ export default function ({ navigation }) {
               onChangeText={(text) => setEmail(text)}
             />
 
-            <Text style={{ marginTop: 15 }}>Nom - Prénom</Text>
+            <Text style={{ marginTop: 15 }}>Pseudo</Text>
             <TextInput
               containerStyle={{ marginTop: 15 }}
               placeholder="Entrez votre pseudo"

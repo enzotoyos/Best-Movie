@@ -1,10 +1,7 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
-  Button,
-  Image,
-  TouchableWithoutFeedback,
   FlatList,
   Share,
 } from "react-native";
@@ -28,11 +25,13 @@ export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
   const [likedFilms, setLikedFilms] = useState([]);
 
-  const onShare = async (title) => {
+  const onShare = async (movie) => {
     try {
+      console.log(movie);
       const result = await Share.share({
         message: "Tu devrais regarder ce film ! ",
-        title,
+        url: "https://image.tmdb.org/t/p/w500/" + movie.posterPath,
+        title: movie.movieTitle,
       });
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
@@ -58,7 +57,6 @@ export default function ({ navigation }) {
       .then((doc) => {
         if (doc.exists) {
           let value = doc.data();
-          console.log("test", value.movie);
           setLikedFilms(value.movie);
         } else {
           // doc.data() will be undefined in this case
@@ -93,7 +91,7 @@ export default function ({ navigation }) {
       <CardTitle subtitle={"Ajouté le: " + item.addedAt} />
       <CardAction separator={true} inColumn={false}>
         <CardButton
-          onPress={() => onShare(item.movieTitle)}
+          onPress={() => onShare(item)}
           title="Partager"
           color="#FEB557"
         />
