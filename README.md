@@ -20,4 +20,4 @@ expo start
 
 ## 3. Wireframe
 
-![alt text](gs://best-movie-e1fe8.appspot.com/wireframe/Favorites.png)
+![alt text](https://github.com/enzotoyos/Best-Movie/tree/main/media/Favorites.png)
