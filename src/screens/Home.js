@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Image } from "react-native";
 import firebase from "firebase";
-import { Layout, Text, useTheme } from "react-native-rapi-ui";
+import {
+  Layout,
+  Text,
+  useTheme,
+  TopNav,
+  themeColor,
+} from "react-native-rapi-ui";
 import { Ionicons } from "@expo/vector-icons";
 import Swiper from "react-native-deck-swiper";
 import { discoveryFilms } from "../API/index";
@@ -57,9 +63,17 @@ export default function ({ navigation }) {
 
   return (
     <Layout>
-      <Text fontWeight="bold" style={styles.title}>
-        Créer votre propre collection
-      </Text>
+      <TopNav
+        rightContent={
+          <Ionicons
+            name="refresh-circle-outline"
+            size={30}
+            color={isDarkmode ? themeColor.white100 : themeColor.black}
+          />
+        }
+        rightAction={() => console.log("setting icon pressed")}
+        middleContent="Settings"
+      />
       <View style={styles.container}>
         <View
           style={{
@@ -103,7 +117,7 @@ export default function ({ navigation }) {
             }}
             onSwipedLeft={(cardIndex) => onSwipeLeft(cardIndex)}
             onSwipedRight={(cardIndex) => {
-              onSwipeRight(cardIndex)
+              onSwipeRight(cardIndex);
             }} // idem à droite
             cardIndex={0}
             backgroundColor={"transparent"}
@@ -111,9 +125,6 @@ export default function ({ navigation }) {
           />
         </View>
       </View>
-      <View
-        style={{ marginLeft: 100, marginRight: 100, marginTop: 200 }}
-      ></View>
     </Layout>
   );
 }
@@ -140,11 +151,6 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     width: "100%",
     height: "100%",
-  },
-  title: {
-    marginTop: "5%",
-    textAlign: "center",
-    fontSize: 20,
   },
   originalTtile: {
     textAlign: "center",
