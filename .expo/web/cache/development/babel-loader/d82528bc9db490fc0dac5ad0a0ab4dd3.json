@@ -1,0 +1,1 @@
+{"ast":null,"code":"import Swiper from \"./Swiper\";\nexport default Swiper;","map":{"version":3,"sources":["D:/Documents/Ynov/Mobile/Best-Movie/node_modules/react-native-deck-swiper/index.js"],"names":["Swiper"],"mappings":"AAAA,OAAOA,MAAP;AACA,eAAeA,MAAf","sourcesContent":["import Swiper from './Swiper'\nexport default Swiper\n"]},"metadata":{},"sourceType":"module"}
