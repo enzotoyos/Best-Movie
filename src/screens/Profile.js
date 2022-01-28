@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, TouchableOpacity, Image, Platform } from "react-native";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import Modal from "react-native-modal";
-import { GetUser, updateUser, updateEmail, updatePassword, signOut, uploadImage } from "./utils/GetDataUser";
+import { GetUser, updateUser, updateEmail, updatePassword, signOut } from "./utils/GetDataUser";
 import Toast from 'react-native-toast-message';
 import {
 	Layout,
 	Text,
 	TextInput,
-	Button,
 	Avatar,
 	Section,
 	SectionContent,
@@ -16,7 +15,6 @@ import {
 } from "react-native-rapi-ui";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
-import * as ImagePicker from 'expo-image-picker';
 
 export default function ({ navigation }) {
 	const { isDarkmode, setTheme } = useTheme();
@@ -51,6 +49,11 @@ export default function ({ navigation }) {
 		setModalVisibleAdmin(!isModalVisibleAdmin);
 		setPasswordReset(false)
 	};
+
+	const changeTheme = () => {
+		isDarkmode ? setTheme("light") : setTheme("dark");
+		AsyncStorage.setItem("theme", String(isDarkmode));
+	}
 
 	useEffect(() => {
 		getData();
@@ -260,7 +263,7 @@ export default function ({ navigation }) {
 								size="xl"
 								shape="round"
 							/>
-							<Text style={{ margin: 5 }}>{String(user.Name)}</Text>
+							<Text style={{ margin: 5 }}>{String(name)}</Text>
 						</SectionContent>
 					</Section>
 				</View>
@@ -270,7 +273,7 @@ export default function ({ navigation }) {
 				<View style={styles.view}>
 					<TouchableOpacity style={styles.button}
 						onPress={() => {
-							isDarkmode ? setTheme("light") : setTheme("dark");
+							changeTheme();
 						}}
 					>
 						<Ionicons

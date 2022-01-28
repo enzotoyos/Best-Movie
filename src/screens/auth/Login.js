@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { StatusBar } from "expo-status-bar";
+import React, { useState, useEffect } from "react";
 import {
   ScrollView,
   TouchableOpacity,
@@ -8,6 +7,7 @@ import {
   Image,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Toast from 'react-native-toast-message';
 import firebase from "firebase";
 import {
   Layout,
@@ -24,14 +24,42 @@ export default function ({ navigation }) {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+  initializeTheme = async () => {
+    try {
+      const value = await AsyncStorage.getItem('theme');
+      if (value !== null && value !== undefined) {
+        (value === 'true') ? setTheme("light") : setTheme("dark");
+      } else {
+        AsyncStorage.setItem("theme", String(isDarkmode));
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  useEffect(() => {
+    initializeTheme();
+  }, []);
+
+  const changeTheme = () => {
+    isDarkmode ? setTheme("light") : setTheme("dark");
+    AsyncStorage.setItem("theme", String(isDarkmode));
+  }
+
   const login = async () => {
     setLoading(true);
     if (email.length == 0) {
-      alert("Email non renseigné");
+      Toast.show({
+        type: 'info',
+        text1: 'Email non renseigné'
+      });
       setLoading(false);
       return null;
     } else if (password == 0) {
-      alert("mot de passe non renseigné");
+      Toast.show({
+        type: 'info',
+        text1: 'Mot de passe non renseigné'
+      });
       setLoading(false);
       return null;
     }
@@ -41,23 +69,31 @@ export default function ({ navigation }) {
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
-        // console.log(user);
         AsyncStorage.setItem("uid", String(user.uid));
 
         if (user.emailVerified == false) {
-          alert("Vous devez vérifier votre Email pour vous connecter");
+          Toast.show({
+            type: 'info',
+            text1: 'Vous devez vérifier votre Email pour vous connecter'
+          });
           setLoading(false);
         } else {
-          console.log("User connected");
+          Toast.show({
+            type: 'success',
+            text1: 'Vous êtes connecté'
+          });
         }
       })
       .catch(function (error) {
         // Handle Errors here.
         var errorCode = error.code;
         var errorMessage = error.message;
-        // ...
         setLoading(false);
-        alert("Adresse mail ou mot de passe incorrect");
+        Toast.show({
+          type: 'error',
+          text1: 'Adresse mail ou mot de passe incorrect',
+          text2: error.message
+        });
       });
   };
 
@@ -191,7 +227,7 @@ export default function ({ navigation }) {
             >
               <TouchableOpacity
                 onPress={() => {
-                  isDarkmode ? setTheme("light") : setTheme("dark");
+                  changeTheme();
                 }}
               >
                 <Text

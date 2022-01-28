@@ -1,12 +1,10 @@
 import React, { useState } from "react";
-import { StatusBar } from "expo-status-bar";
 import {
   ScrollView,
   TouchableOpacity,
   View,
   KeyboardAvoidingView,
-  Image,
-  Alert,
+  Image
 } from "react-native";
 import firebase from "firebase";
 
@@ -19,7 +17,8 @@ import {
   themeColor,
 } from "react-native-rapi-ui";
 import { AddUserFirestore } from "../auth/AddUserFirestore";
-import { SendEmailVerification } from "./SendEmail";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Toast from 'react-native-toast-message';
 
 export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
@@ -28,13 +27,20 @@ export default function ({ navigation }) {
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const changeTheme = () => {
+    isDarkmode ? setTheme("light") : setTheme("dark");
+    AsyncStorage.setItem("theme", String(isDarkmode));
+  }
+
   async function SendEmailVerification() {
     await firebase
       .auth()
       .currentUser.sendEmailVerification()
       .then(() => {
-        alert("Email de vérification envoyé");
-        // ...
+        Toast.show({
+          type: 'info',
+          text1: 'Email de vérification envoyé'
+        });
       });
   }
 
@@ -43,15 +49,24 @@ export default function ({ navigation }) {
   async function register() {
     setLoading(true);
     if (email.length == 0) {
-      alert("Email non renseigné");
+      Toast.show({
+        type: 'info',
+        text1: 'Email non renseignéé'
+      });
       setLoading(false);
       return null;
     } else if (password.length == 0) {
-      alert("mot de passe non renseigné");
+      Toast.show({
+        type: 'info',
+        text1: 'Mot de passe non renseigné'
+      });
       setLoading(false);
       return null;
     } else if (name.lenght == 0) {
-      alert("Noubliez pas votre nom");
+      Toast.show({
+        type: 'info',
+        text1: 'Pseudo non renseigné'
+      });
       setLoading(false);
       return null;
     }
@@ -136,7 +151,7 @@ export default function ({ navigation }) {
             <Text style={{ marginTop: 15 }}>Nom - Prénom</Text>
             <TextInput
               containerStyle={{ marginTop: 15 }}
-              placeholder="Entrez votre nom et prénom"
+              placeholder="Entrez votre pseudo"
               value={name}
               autoCapitalize="none"
               autoCompleteType="off"
@@ -201,7 +216,7 @@ export default function ({ navigation }) {
             >
               <TouchableOpacity
                 onPress={() => {
-                  isDarkmode ? setTheme("light") : setTheme("dark");
+                  changeTheme();
                 }}
               >
                 <Text
