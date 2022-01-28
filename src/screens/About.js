@@ -1,15 +1,16 @@
-import React, { Component } from "react";
-import { View, StyleSheet, Button, Image } from "react-native";
+import React, { Component, useEffect, useState } from "react";
 import {
-  Layout,
-  Text,
-  useTheme,
-  Section,
-  SectionContent,
-  SectionImage,
-} from "react-native-rapi-ui";
+  View,
+  StyleSheet,
+  Button,
+  Image,
+  TouchableWithoutFeedback,
+  FlatList,
+} from "react-native";
+import { Layout, Text, themeColor, useTheme } from "react-native-rapi-ui";
 import { discoveryFilms } from "../API/index";
 import { ScrollView } from "react-native";
+import firebase from "firebase/app";
 import { getLikedFilms } from "../screens/auth/AddUserFirestore";
 import {
   Card,
@@ -19,40 +20,70 @@ import {
   CardButton,
   CardImage,
 } from "react-native-cards";
+import "firebase/firestore";
 
 export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
+  const [likedFilms, setLikedFilms] = useState([]);
 
-  const renderLikedFilms = async () => {
-    const value = await getLikedFilms();
+  const getFilmsLiked = () => {
+    var db = firebase.firestore();
+    const user = firebase.auth().currentUser;
+    var docRef = db.collection("liked_films").doc(user.uid);
+
+    docRef
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          let value = doc.data();
+          console.log("test", value.movie);
+          setLikedFilms(value.movie);
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+        }
+      })
+      .catch((error) => {
+        console.log("Error getting document:", error);
+      });
+    console.log(likedFilms);
   };
 
-  //renderLikedFilms();
+  useEffect(() => {
+    getFilmsLiked();
+  }, []);
+
+  const RenderCard = ({ item, i }) => (
+    <Card
+      style={{
+        borderRadius: 7,
+        marginLeft: 15,
+        marginRight: 15,
+      }}
+    >
+      <CardImage
+        source={{
+          uri: "https://image.tmdb.org/t/p/w500/" + item.posterPath,
+        }}
+        title={item.movieTitle}
+        style={{ borderRadius: 7 }}
+      />
+      <CardTitle subtitle={"Ajouté le: " + item.addedAt} />
+      <CardAction separator={true} inColumn={false}>
+        <CardButton onPress={() => {}} title="Partager" color="#FEB557" />
+        <CardButton onPress={() => {}} title="Explorer" color="#FEB557" />
+      </CardAction>
+    </Card>
+  );
 
   return (
     <Layout>
-      <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-          marginBottom: 1,
-          backgroundColor: "transparent",
-        }}
-      >
+      <View>
         <Text style={styles.title}>Votre collection</Text>
+      </View>
+      <View>
         <ScrollView>
-          <Card>
-            <CardImage
-              source={{ uri: "http://bit.ly/2GfzooV" }}
-              title="Top 10 South African beaches"
-            />
-            <CardTitle subtitle="Number 6" />
-            <CardContent text="Clifton, Western Cape" />
-            <CardAction separator={true} inColumn={false}>
-              <CardButton onPress={() => {}} title="Share" color="#FEB557" />
-              <CardButton onPress={() => {}} title="Explore" color="#FEB557" />
-            </CardAction>
-          </Card>
+          <FlatList data={likedFilms} renderItem={RenderCard}></FlatList>
         </ScrollView>
       </View>
     </Layout>
