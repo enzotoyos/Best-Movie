@@ -20,4 +20,4 @@ expo start
 
 ## 3. Wireframe
 
-![alt text](https://user-images.githubusercontent.com/58291299/151580205-7a47f683-eca1-444e-98d7-5668c07f84cf.png)
+![alt](https://user-images.githubusercontent.com/58291299/151580205-7a47f683-eca1-444e-98d7-5668c07f84cf.png)
