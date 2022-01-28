@@ -6,6 +6,7 @@ import {
   Image,
   TouchableWithoutFeedback,
   FlatList,
+  Share,
 } from "react-native";
 import { Layout, Text, themeColor, useTheme } from "react-native-rapi-ui";
 import { discoveryFilms } from "../API/index";
@@ -25,6 +26,26 @@ import "firebase/firestore";
 export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
   const [likedFilms, setLikedFilms] = useState([]);
+
+  const onShare = async (title) => {
+    try {
+      const result = await Share.share({
+        message: "Tu devrais regarder ce film ! ",
+        title,
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
 
   const getFilmsLiked = () => {
     var db = firebase.firestore();
@@ -70,7 +91,11 @@ export default function ({ navigation }) {
       />
       <CardTitle subtitle={"Ajouté le: " + item.addedAt} />
       <CardAction separator={true} inColumn={false}>
-        <CardButton onPress={() => {}} title="Partager" color="#FEB557" />
+        <CardButton
+          onPress={() => onShare(item.movieTitle)}
+          title="Partager"
+          color="#FEB557"
+        />
         <CardButton onPress={() => {}} title="Explorer" color="#FEB557" />
       </CardAction>
     </Card>
