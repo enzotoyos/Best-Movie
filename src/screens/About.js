@@ -7,6 +7,9 @@ import {
   TouchableWithoutFeedback,
   FlatList,
   Share,
+  Modal,
+  Pressable,
+  RefreshControl,
 } from "react-native";
 import { Layout, Text, themeColor, useTheme } from "react-native-rapi-ui";
 import { discoveryFilms } from "../API/index";
@@ -27,6 +30,7 @@ import color from "color";
 export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
   const [likedFilms, setLikedFilms] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const onShare = async (title) => {
     try {
@@ -76,30 +80,36 @@ export default function ({ navigation }) {
   }, []);
 
   const RenderCard = ({ item, i }) => (
-    <Card
-      style={{
-        borderRadius: 7,
-        marginLeft: 15,
-        marginRight: 15,
-      }}
-    >
-      <CardImage
-        source={{
-          uri: "https://image.tmdb.org/t/p/w500/" + item.posterPath,
+    <View>
+      <Card
+        style={{
+          borderRadius: 7,
+          marginLeft: 15,
+          marginRight: 15,
         }}
-        title={item.movieTitle}
-        style={{ borderRadius: 7 }}
-      />
-      <CardTitle subtitle={"Ajouté le: " + item.addedAt} />
-      <CardAction separator={true} inColumn={false}>
-        <CardButton
-          onPress={() => onShare(item.movieTitle)}
-          title="Partager"
-          color="#FEB557"
+      >
+        <CardImage
+          source={{
+            uri: "https://image.tmdb.org/t/p/w500/" + item.posterPath,
+          }}
+          title={item.movieTitle}
+          style={{ borderRadius: 7 }}
         />
-        <CardButton onPress={() => {}} title="Explorer" color="#FEB557" />
-      </CardAction>
-    </Card>
+        <CardTitle subtitle={"Ajouté le: " + item.addedAt} />
+        <CardAction separator={true} inColumn={false}>
+          <CardButton
+            onPress={() => onShare(item.movieTitle)}
+            title="Partager"
+            color="#FEB557"
+          />
+          <CardButton
+            onPress={() => setModalVisible(true)}
+            title="Explorer"
+            color="#FEB557"
+          />
+        </CardAction>
+      </Card>
+    </View>
   );
 
   return (
@@ -108,7 +118,9 @@ export default function ({ navigation }) {
         <Text style={styles.title}>Votre collection</Text>
       </View>
       <View>
-        <ScrollView>
+        <ScrollView
+          refreshControl={<RefreshControl onRefresh={getFilmsLiked} />}
+        >
           <FlatList data={likedFilms} renderItem={RenderCard}></FlatList>
         </ScrollView>
       </View>
@@ -145,5 +157,26 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginTop: "5%",
     marginBottom: "2%",
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
   },
 });

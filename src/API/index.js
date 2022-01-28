@@ -1,5 +1,6 @@
 import React from "react";
-
+import firebase from "firebase";
+import "firebase/firestore";
 // Requête pour découvrir les films les plus populaires du moment
 export const discoveryFilms = () => {
   return new Promise((resolve, reject) => {
