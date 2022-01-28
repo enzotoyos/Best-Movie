@@ -25,6 +25,12 @@ export default function ({ navigation }) {
 
   async function forget() {
     setLoading(true);
+    if (email.lenght == 0) {
+      alert("Email non renseigné");
+      setLoading(false);
+      return null;
+    }
+
     await firebase
       .auth()
       .sendPasswordResetEmail(email)
@@ -37,7 +43,7 @@ export default function ({ navigation }) {
       })
       .catch(function (error) {
         setLoading(false);
-        alert(error);
+        alert("Votre Email n'est pas enregistré");
       });
   }
   return (
@@ -95,7 +101,7 @@ export default function ({ navigation }) {
               onChangeText={(text) => setEmail(text)}
             />
             <Button
-              text={loading ? "Loading" : "Send email"}
+              text={loading ? "Loading" : "Envoyer l'Email"}
               onPress={() => {
                 forget();
               }}

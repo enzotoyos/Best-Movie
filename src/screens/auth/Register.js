@@ -42,6 +42,19 @@ export default function ({ navigation }) {
   let user;
   async function register() {
     setLoading(true);
+    if (email.length == 0) {
+      alert("Email non renseigné");
+      setLoading(false);
+      return null;
+    } else if (password.length == 0) {
+      alert("mot de passe non renseigné");
+      setLoading(false);
+      return null;
+    } else if (name.lenght == 0) {
+      alert("Noubliez pas votre nom");
+      setLoading(false);
+      return null;
+    }
     await firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
