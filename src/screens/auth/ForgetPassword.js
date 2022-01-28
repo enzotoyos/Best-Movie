@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { StatusBar } from "expo-status-bar";
 import {
   ScrollView,
   TouchableOpacity,
@@ -8,7 +7,8 @@ import {
   Image,
 } from "react-native";
 import firebase from "firebase";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Toast from 'react-native-toast-message';
 import {
   Layout,
   Text,
@@ -23,10 +23,18 @@ export default function ({ navigation }) {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const changeTheme = () => {
+    isDarkmode ? setTheme("light") : setTheme("dark");
+    AsyncStorage.setItem("theme", String(isDarkmode));
+  }
+
   async function forget() {
     setLoading(true);
-    if (email.lenght == 0) {
-      alert("Email non renseigné");
+    if (email.length == 0) {
+      Toast.show({
+        type: 'info',
+        text1: 'Email non renseigné'
+      });
       setLoading(false);
       return null;
     }
@@ -37,13 +45,18 @@ export default function ({ navigation }) {
       .then(function () {
         setLoading(false);
         navigation.navigate("Login");
-        alert(
-          "Votre mot de passe à été réinitialisé. Vous allez recevoir voir un Email"
-        );
+        Toast.show({
+          type: 'success',
+          text1: 'Votre mot de passe à été réinitialisé',
+          text2: 'Vous allez recevoir voir un Email.'
+        });
       })
       .catch(function (error) {
         setLoading(false);
-        alert("Votre Email n'est pas enregistré");
+        Toast.show({
+          type: 'error',
+          text1: "Votre Email n'est pas enregistré"
+        });
       });
   }
   return (
@@ -146,7 +159,7 @@ export default function ({ navigation }) {
             >
               <TouchableOpacity
                 onPress={() => {
-                  isDarkmode ? setTheme("light") : setTheme("dark");
+                  changeTheme();
                 }}
               >
                 <Text
@@ -156,7 +169,7 @@ export default function ({ navigation }) {
                     marginLeft: 5,
                   }}
                 >
-                  {isDarkmode ? "☀️ light theme" : "🌑 dark theme"}
+                  {isDarkmode ? "☀️ Mode clair" : "🌑 Mode sombre"}
                 </Text>
               </TouchableOpacity>
             </View>
