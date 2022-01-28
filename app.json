@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Best-Movie",
-    "slug": "Best-Movie",
+    "name": "Best_Movie",
+    "slug": "Best_Movie",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -16,15 +16,6 @@
     "assetBundlePatterns": ["**/*"],
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "ios": {
-      "bundleIdentifier": "com.enzotoyos.best-movie",
-      "buildNumber": "1.0.0",
-      "supportsTablet": true
-    },
-    "android": {
-      "package": "com.enzotoyos.best-movie",
-      "versionCode": 1
     }
   }
 }

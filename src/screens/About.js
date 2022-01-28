@@ -1,11 +1,33 @@
-import React from "react";
+import React, { Component } from "react";
 import { View, StyleSheet, Button, Image } from "react-native";
-import { Layout, Text, useTheme } from "react-native-rapi-ui";
+import {
+  Layout,
+  Text,
+  useTheme,
+  Section,
+  SectionContent,
+  SectionImage,
+} from "react-native-rapi-ui";
 import { discoveryFilms } from "../API/index";
-import Swiper from "react-native-deck-swiper";
+import { ScrollView } from "react-native";
+import { getLikedFilms } from "../screens/auth/AddUserFirestore";
+import {
+  Card,
+  CardTitle,
+  CardContent,
+  CardAction,
+  CardButton,
+  CardImage,
+} from "react-native-cards";
 
 export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
+
+  const renderLikedFilms = async () => {
+    const value = await getLikedFilms();
+  };
+
+  //renderLikedFilms();
 
   return (
     <Layout>
@@ -13,11 +35,25 @@ export default function ({ navigation }) {
         style={{
           flex: 1,
           alignItems: "center",
-          marginBottom: 60,
+          marginBottom: 1,
           backgroundColor: "transparent",
         }}
       >
         <Text style={styles.title}>Votre collection</Text>
+        <ScrollView>
+          <Card>
+            <CardImage
+              source={{ uri: "http://bit.ly/2GfzooV" }}
+              title="Top 10 South African beaches"
+            />
+            <CardTitle subtitle="Number 6" />
+            <CardContent text="Clifton, Western Cape" />
+            <CardAction separator={true} inColumn={false}>
+              <CardButton onPress={() => {}} title="Share" color="#FEB557" />
+              <CardButton onPress={() => {}} title="Explore" color="#FEB557" />
+            </CardAction>
+          </Card>
+        </ScrollView>
       </View>
     </Layout>
   );
@@ -51,5 +87,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 20,
     marginTop: "5%",
+    marginBottom: "2%",
   },
 });
