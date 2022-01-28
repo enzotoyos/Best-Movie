@@ -1,10 +1,7 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
-  Button,
-  Image,
-  TouchableWithoutFeedback,
   FlatList,
   Share,
 } from "react-native";
@@ -59,7 +56,6 @@ export default function ({ navigation }) {
       .then((doc) => {
         if (doc.exists) {
           let value = doc.data();
-          console.log("test", value.movie);
           setLikedFilms(value.movie);
         } else {
           // doc.data() will be undefined in this case
