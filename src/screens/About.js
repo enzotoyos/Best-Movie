@@ -21,6 +21,7 @@ import {
   CardImage,
 } from "react-native-cards";
 import "firebase/firestore";
+import color from "color";
 
 export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();

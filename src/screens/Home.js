@@ -1,24 +1,7 @@
 import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Dimensions,
-  Image,
-  Animated,
-  PanResponder,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, View, Image } from "react-native";
 import firebase from "firebase";
-import {
-  Layout,
-  Button,
-  Text,
-  TopNav,
-  Section,
-  SectionContent,
-  useTheme,
-  themeColor,
-} from "react-native-rapi-ui";
+import { Layout, Text, useTheme } from "react-native-rapi-ui";
 import { Ionicons } from "@expo/vector-icons";
 import Swiper from "react-native-deck-swiper";
 import { discoveryFilms } from "../API/index";
@@ -30,6 +13,7 @@ export default function ({ navigation }) {
   let title;
   const { isDarkmode, setTheme } = useTheme();
   const [movieList, setMovieList] = useState([]);
+  const [rating, setRating] = useState(0);
 
   useEffect(() => {
     getDataMovie();
@@ -93,6 +77,7 @@ export default function ({ navigation }) {
                 idCard = card.id;
                 posterPath = card.poster_path;
                 title = card.original_title;
+                setRating(card.vote_average);
                 return (
                   <View style={styles.card}>
                     <Text style={styles.originalTtile}>
@@ -125,6 +110,9 @@ export default function ({ navigation }) {
           />
         </View>
       </View>
+      <View
+        style={{ marginLeft: 100, marginRight: 100, marginTop: 200 }}
+      ></View>
     </Layout>
   );
 }
