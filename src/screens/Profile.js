@@ -34,8 +34,6 @@ export default function ({ navigation }) {
 	const [isModalVisibleAdmin, setModalVisibleAdmin] = useState(false);
 	const [isPasswordReset, setPasswordReset] = useState(false);
 
-	const [selectedImage, setSelectedImage] = React.useState(null);
-
 	const toggleModal = () => {
 		setModalVisible(!isModalVisible);
 	};
@@ -57,42 +55,6 @@ export default function ({ navigation }) {
 	useEffect(() => {
 		getData();
 	}, []);
-
-	const setAvatar = () => {
-		if (selectedImage !== null) {
-			return (
-				<Avatar
-					source={{ uri: selectedImage.uri }}
-					size="xl"
-					shape="round"
-				/>
-			);
-		} else {
-			return (
-				<Avatar
-					source={require("../../media/avatar.png")}
-					size="xl"
-					shape="round"
-				/>
-			);
-		}
-
-		// if (selectedImage !== null) {
-		// 	return (
-		// 		<Image
-		// 			source={{ uri: selectedImage.uri }}
-		// 			style={styles.thumbnail}
-		// 		/>
-		// 	);
-		// } else {
-		// 	return (
-		// 		<Image
-		// 			source={require("../../media/avatar.png")}
-		// 			style={styles.thumbnail}
-		// 		/>
-		// 	);
-		// }
-	};
 
 	const getData = async () => {
 		try {
@@ -160,26 +122,6 @@ export default function ({ navigation }) {
 			});
 		}
 	};
-
-	const openImagePickerAsync = async () => {
-		let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-		if (permissionResult.granted === false) {
-			alert("Permission to access camera roll is required!");
-			return;
-		}
-
-		let pickerResult = await ImagePicker.launchImageLibraryAsync();
-		if (pickerResult.cancelled) {
-			return;
-		}
-
-		setSelectedImage(pickerResult);
-
-		const filename = pickerResult.uri.substring(pickerResult.uri.lastIndexOf('/') + 1);
-		const ext = filename.substring(filename.lastIndexOf('.') + 1);
-		const uploadUri = Platform.OS === 'ios' ? pickerResult.uri.replace('file://', '') : pickerResult.uri;
-	}
 
 	return (
 		<Layout>
@@ -313,12 +255,11 @@ export default function ({ navigation }) {
 				<View style={styles.topContainer}>
 					<Section style={styles.card}>
 						<SectionContent>
-							{/* <Avatar
+							<Avatar
 								source={require("../../media/avatar.png")}
 								size="xl"
 								shape="round"
-							/> */}
-							{setAvatar()}
+							/>
 							<Text style={{ margin: 5 }}>{String(user.Name)}</Text>
 						</SectionContent>
 					</Section>
@@ -353,16 +294,6 @@ export default function ({ navigation }) {
 						<Text>Modifier mon pseudo</Text>
 					</TouchableOpacity>
 
-					<TouchableOpacity style={styles.button} onPress={openImagePickerAsyncBis}>
-						<Ionicons
-							name="person-circle-outline"
-							size={30}
-							color={isDarkmode ? themeColor.white100 : themeColor.black}
-							style={styles.icon}
-						/>
-						<Text>Modifier mon avatar</Text>
-					</TouchableOpacity>
-
 					<TouchableOpacity style={styles.button} onPress={toggleEmail}>
 						<Ionicons
 							name="mail-outline"
@@ -391,10 +322,6 @@ export default function ({ navigation }) {
 							style={styles.icon}
 						/>
 						<Text style={{ color: "#d75724" }}>Déconnexion</Text>
-					</TouchableOpacity>
-
-					<TouchableOpacity onPress={openImagePickerAsync} style={styles.button}>
-						<Text>Pick a photo</Text>
 					</TouchableOpacity>
 				</View>
 			</View>
