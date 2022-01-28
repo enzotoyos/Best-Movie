@@ -11,8 +11,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import Swiper from "react-native-deck-swiper";
 import { discoveryFilms } from "../API/index";
-import { pushFilmsOnFirestore } from "../screens/utils/pushFilmsFirestore";
-import StarRating from "react-native-star-rating";
+import { pushFilmsOnFirestore } from "./utils/controllerFirestore";
 
 export default function ({ navigation }) {
   let idCard;

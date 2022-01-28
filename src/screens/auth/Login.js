@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from 'react-native-toast-message';
-import firebase from "firebase";
+import { signInWithEmailAndPassword } from "../utils/controllerFirestore";
 import {
   Layout,
   Text,
@@ -24,7 +24,7 @@ export default function ({ navigation }) {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  initializeTheme = async () => {
+  const initializeTheme = async () => {
     try {
       const value = await AsyncStorage.getItem('theme');
       if (value !== null && value !== undefined) {
@@ -63,38 +63,8 @@ export default function ({ navigation }) {
       setLoading(false);
       return null;
     }
-    await firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        AsyncStorage.setItem("uid", String(user.uid));
-
-        if (user.emailVerified == false) {
-          Toast.show({
-            type: 'info',
-            text1: 'Vous devez vérifier votre Email pour vous connecter'
-          });
-          setLoading(false);
-        } else {
-          Toast.show({
-            type: 'success',
-            text1: 'Vous êtes connecté'
-          });
-        }
-      })
-      .catch(function (error) {
-        // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        setLoading(false);
-        Toast.show({
-          type: 'error',
-          text1: 'Adresse mail ou mot de passe incorrect',
-          text2: error.message
-        });
-      });
+    await signInWithEmailAndPassword(email, password);
+    setLoading(false);
   };
 
   return (

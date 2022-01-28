@@ -9,10 +9,12 @@ import {
   RefreshControl,
 } from "react-native";
 import { Layout, Text, themeColor, useTheme } from "react-native-rapi-ui";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { discoveryFilms } from "../API/index";
 import { ScrollView } from "react-native";
 import firebase from "firebase/app";
-import { getLikedFilms } from "../screens/auth/AddUserFirestore";
+import * as WebBrowser from 'expo-web-browser';
+import { getLikedFilms } from "./utils/controllerFirestore";
 import {
   Card,
   CardTitle,
@@ -28,10 +30,32 @@ export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
   const [likedFilms, setLikedFilms] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [result, setResult] = useState(null);
+
+  const initializeTheme = async () => {
+    try {
+      const value = await AsyncStorage.getItem('theme');
+      if (value !== null && value !== undefined) {
+        (value === 'true') ? setTheme("light") : setTheme("dark");
+      } else {
+        AsyncStorage.setItem("theme", String(isDarkmode));
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  useEffect(() => {
+    initializeTheme();
+  }, []);
+  
+  const openMovieOnBrowser = async (movie) => {
+    let result = await WebBrowser.openBrowserAsync('https://www.themoviedb.org/movie/' + movie.movieID);
+    setResult(result);
+  };
 
   const onShare = async (movie) => {
     try {
-      console.log(movie);
       const result = await Share.share({
         message: "Tu devrais regarder ce film ! ",
         url: "https://image.tmdb.org/t/p/w500/" + movie.posterPath,
@@ -51,26 +75,10 @@ export default function ({ navigation }) {
     }
   };
 
-  const getFilmsLiked = () => {
-    var db = firebase.firestore();
+  const getFilmsLiked = async () => {
     const user = firebase.auth().currentUser;
-    var docRef = db.collection("liked_films").doc(user.uid);
-
-    docRef
-      .get()
-      .then((doc) => {
-        if (doc.exists) {
-          let value = doc.data();
-          setLikedFilms(value.movie);
-        } else {
-          // doc.data() will be undefined in this case
-          console.log("No such document!");
-        }
-      })
-      .catch((error) => {
-        console.log("Error getting document:", error);
-      });
-    console.log(likedFilms);
+    const collection = await getLikedFilms(user.uid);
+    setLikedFilms(collection.movie);
   };
 
   useEffect(() => {
@@ -101,7 +109,7 @@ export default function ({ navigation }) {
             color="#FEB557"
           />
           <CardButton
-            onPress={() => setModalVisible(true)}
+            onPress={() => openMovieOnBrowser(item)}
             title="Explorer"
             color="#FEB557"
           />
