@@ -20,4 +20,4 @@ expo start
 
 ## 3. Wireframe
 
-![alt text](../media/Login.png)
+![alt text](gs://best-movie-e1fe8.appspot.com/wireframe/Favorites.png)
