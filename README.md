@@ -2,6 +2,7 @@
 
 ## 1. Spécification
 
+- InApp-Browser pour accéder aux détails des films likés
 - Possibilité de partager un film
 - Utilisation de Firebase pour:
   - Authentification
