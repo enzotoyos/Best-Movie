@@ -115,13 +115,9 @@ export default function ({ navigation }) {
       <View>
         <Text style={styles.title}>Votre collection</Text>
       </View>
-      <View>
-        <ScrollView
-          refreshControl={<RefreshControl onRefresh={getFilmsLiked} />}
-        >
-          <FlatList data={likedFilms} renderItem={RenderCard}></FlatList>
-        </ScrollView>
-      </View>
+      <ScrollView refreshControl={<RefreshControl onRefresh={getFilmsLiked} />}>
+        <FlatList data={likedFilms} renderItem={RenderCard}></FlatList>
+      </ScrollView>
     </Layout>
   );
 }
