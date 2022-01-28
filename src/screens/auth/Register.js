@@ -41,6 +41,7 @@ export default function ({ navigation }) {
           type: 'info',
           text1: 'Email de vérification envoyé'
         });
+        navigation.navigate('login');
       });
   }
 
