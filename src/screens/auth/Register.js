@@ -6,8 +6,6 @@ import {
   KeyboardAvoidingView,
   Image
 } from "react-native";
-import firebase from "firebase";
-
 import {
   Layout,
   Text,
@@ -16,7 +14,7 @@ import {
   useTheme,
   themeColor,
 } from "react-native-rapi-ui";
-import { AddUserFirestore } from "../auth/AddUserFirestore";
+import { createUserWithEmailAndPassword } from "../utils/controllerFirestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from 'react-native-toast-message';
 
@@ -32,21 +30,6 @@ export default function ({ navigation }) {
     AsyncStorage.setItem("theme", String(isDarkmode));
   }
 
-  async function SendEmailVerification() {
-    await firebase
-      .auth()
-      .currentUser.sendEmailVerification()
-      .then(() => {
-        Toast.show({
-          type: 'info',
-          text1: 'Email de vérification envoyé'
-        });
-        navigation.navigate('login');
-      });
-  }
-
-  var userID;
-  let user;
   async function register() {
     setLoading(true);
     if (email.length == 0) {
@@ -71,27 +54,9 @@ export default function ({ navigation }) {
       setLoading(false);
       return null;
     }
-    await firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        user = userCredential.user;
-        userID = user.uid;
-        console.log(userID);
-        AddUserFirestore(email, name, userID);
-        if (user.emailVerified == false) {
-          SendEmailVerification();
-        }
-        setLoading(false);
-      })
-      .catch(function (error) {
-        // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        // ...
-        setLoading(false);
-        alert(errorMessage);
-      });
+    await createUserWithEmailAndPassword(email, name, password);
+    setLoading(false);
+    navigation.navigate("Login");
   }
 
   return (

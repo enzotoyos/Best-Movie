@@ -4,11 +4,11 @@ import {
   TouchableOpacity,
   View,
   KeyboardAvoidingView,
-  Image,
+  Image
 } from "react-native";
-import firebase from "firebase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from 'react-native-toast-message';
+import { sendPasswordResetEmail } from "../utils/controllerFirestore";
 import {
   Layout,
   Text,
@@ -38,27 +38,11 @@ export default function ({ navigation }) {
       setLoading(false);
       return null;
     }
-
-    await firebase
-      .auth()
-      .sendPasswordResetEmail(email)
-      .then(function () {
-        setLoading(false);
-        navigation.navigate("Login");
-        Toast.show({
-          type: 'success',
-          text1: 'Votre mot de passe à été réinitialisé',
-          text2: 'Vous allez recevoir voir un Email.'
-        });
-      })
-      .catch(function (error) {
-        setLoading(false);
-        Toast.show({
-          type: 'error',
-          text1: "Votre Email n'est pas enregistré"
-        });
-      });
+    await sendPasswordResetEmail(email);
+    setLoading(false);
+    navigation.navigate("Login");
   }
+
   return (
     <KeyboardAvoidingView behavior="height" enabled style={{ flex: 1 }}>
       <Layout>
