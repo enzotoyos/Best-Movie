@@ -11,6 +11,7 @@ export async function AddUserFirestore(email, name, uid) {
       CreatedAt: Date.now(),
       Status: "Active",
       ModifiedAt: Date.now(),
+      currentPage: 1,
     });
     db.collection("liked_films").doc(uid).set({ movie: [] });
     db.collection("unliked_films").doc(uid).set({ movie: [] });
