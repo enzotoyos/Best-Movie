@@ -1,5 +1,25 @@
 import firebase from "firebase";
 import "firebase/firestore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+export async function updateCurrentPage() {
+  try {
+    const currentUser = firebase.auth().currentUser;
+    const db = firebase.firestore();
+
+    let currentPage = await AsyncStorage.getItem("currentPage");
+    currentPage = parseInt(currentPage) + 1;
+    await db.collection("users").doc(currentUser.uid).update({ currentPage: currentPage });
+    var docRef = db.collection("users").doc(currentUser.uid);
+    const result = await docRef.get();
+    AsyncStorage.setItem("currentPage", String(result.data().currentPage));
+
+    return result.data().currentPage;
+  } catch (err) {
+    console.log(err.message);
+    return undefined;
+  }
+}
 
 export async function GetUser() {
   try {
