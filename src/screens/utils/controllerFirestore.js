@@ -137,3 +137,21 @@ export const signInWithEmailAndPassword = async (email, password) => {
   });
 }
 
+export const deleteMovie = async (index) => {
+  const uid = await AsyncStorage.getItem("uid");
+  const db = firebase.firestore();
+  var docRef = db.collection("liked_films").doc(uid);
+
+  docRef.update({ movie: firebase.firestore.FieldValue.arrayRemove(index) }).then(() => {
+    Toast.show({
+      type: 'success',
+      text1: 'Le film a été retiré de votre liste'
+    });
+  }).catch((error) => {
+    Toast.show({
+      type: 'error',
+      text1: 'Une erreur est survenue durant la suppression',
+      text2: error.message
+    });
+  });
+}
