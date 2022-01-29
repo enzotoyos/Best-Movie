@@ -137,15 +137,15 @@ export const signInWithEmailAndPassword = async (email, password) => {
   });
 }
 
-export const deleteMovie = async (index) => {
+export const deleteMovie = async (movie) => {
   const uid = await AsyncStorage.getItem("uid");
   const db = firebase.firestore();
   var docRef = db.collection("liked_films").doc(uid);
-
-  docRef.update({ movie: firebase.firestore.FieldValue.arrayRemove(index) }).then(() => {
+  await docRef.update({ movie: firebase.firestore.FieldValue.arrayRemove(movie) }).then(() => {
     Toast.show({
       type: 'success',
-      text1: 'Le film a été retiré de votre liste'
+      text1: 'Le film a été retiré de votre liste',
+      text2: 'Titre : ' + movie.movieTitle
     });
   }).catch((error) => {
     Toast.show({

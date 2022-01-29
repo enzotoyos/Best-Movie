@@ -14,9 +14,6 @@ import { discoveryFilms } from "../API/index";
 import { pushFilmsOnFirestore } from "./utils/controllerFirestore";
 
 export default function ({ navigation }) {
-  let idCard;
-  let posterPath;
-  let title;
   const { isDarkmode, setTheme } = useTheme();
   const [movieList, setMovieList] = useState([]);
   const [rating, setRating] = useState(0);
@@ -28,6 +25,10 @@ export default function ({ navigation }) {
   const getDataMovie = async () => {
     const result = await discoveryFilms();
     setMovieList(result.results);
+  };
+
+  const refreshList = async () => {
+    console.log('refreshList');
   };
 
   const setLoading = (isLoad) => {
@@ -70,7 +71,7 @@ export default function ({ navigation }) {
             color={isDarkmode ? themeColor.white100 : themeColor.black}
           />
         }
-        rightAction={() => console.log("setting icon pressed")}
+        rightAction={() => refreshList()}
         middleContent="Settings"
       />
       <View style={styles.container}>

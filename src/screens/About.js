@@ -4,14 +4,12 @@ import {
   StyleSheet,
   FlatList,
   Share,
-  Modal,
-  Pressable,
   RefreshControl,
-  TouchableOpacity
+  TouchableOpacity,
+  SafeAreaView
 } from "react-native";
 import { Layout, Text, themeColor, useTheme } from "react-native-rapi-ui";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { discoveryFilms } from "../API/index";
 import { ScrollView } from "react-native";
 import firebase from "firebase/app";
 import * as WebBrowser from 'expo-web-browser';
@@ -19,19 +17,17 @@ import { getLikedFilms, deleteMovie } from "./utils/controllerFirestore";
 import {
   Card,
   CardTitle,
-  CardContent,
   CardAction,
   CardButton,
   CardImage,
 } from "react-native-cards";
-import "firebase/firestore";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
   const [likedFilms, setLikedFilms] = useState([]);
-  const [modalVisible, setModalVisible] = useState(false);
   const [result, setResult] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   const initializeTheme = async () => {
     try {
@@ -90,9 +86,11 @@ export default function ({ navigation }) {
   };
 
   const getFilmsLiked = async () => {
+    setRefreshing(true);
     const user = firebase.auth().currentUser;
     const collection = await getLikedFilms(user.uid);
     setLikedFilms(collection.movie);
+    setRefreshing(false)
   };
 
   const RenderCard = ({ item, i }) => (
@@ -140,9 +138,11 @@ export default function ({ navigation }) {
       <View>
         <Text style={styles.title}>Votre collection</Text>
       </View>
-      <ScrollView refreshControl={<RefreshControl onRefresh={getFilmsLiked} />}>
-        <FlatList data={likedFilms} renderItem={RenderCard}></FlatList>
-      </ScrollView>
+      <SafeAreaView>
+        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getFilmsLiked} />}>
+          <FlatList data={likedFilms} renderItem={RenderCard}></FlatList>
+        </ScrollView>
+      </SafeAreaView>
     </Layout>
   );
 }
