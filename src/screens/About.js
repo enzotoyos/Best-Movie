@@ -14,7 +14,7 @@ import { discoveryFilms } from "../API/index";
 import { ScrollView } from "react-native";
 import firebase from "firebase/app";
 import * as WebBrowser from 'expo-web-browser';
-import { getLikedFilms, deleteMovie } from "./utils/controllerFirestore";
+import { getLikedFilms } from "./utils/controllerFirestore";
 import {
   Card,
   CardTitle,
@@ -48,18 +48,7 @@ export default function ({ navigation }) {
   useEffect(() => {
     initializeTheme();
   }, []);
-
-  const deleteMovieFirestore = async (movie) => {
-    let index = 0;
-    likedFilms.forEach((element, i) => {
-      if (element.movieID === movie.movieID) {
-        index = i;
-      }
-    })
-    await deleteMovie(likedFilms[index]);
-    await getFilmsLiked();
-  };
-
+  
   const openMovieOnBrowser = async (movie) => {
     let result = await WebBrowser.openBrowserAsync('https://www.themoviedb.org/movie/' + movie.movieID);
     setResult(result);
@@ -117,11 +106,6 @@ export default function ({ navigation }) {
           <CardButton
             onPress={() => onShare(item.movieTitle)}
             title="Partager"
-            color="#FEB557"
-          />
-          <CardButton
-            onPress={() => openMovieOnBrowser(item)}
-            title="Explorer"
             color="#FEB557"
           />
           <CardButton

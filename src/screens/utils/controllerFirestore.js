@@ -2,7 +2,6 @@ import firebase from "firebase";
 import "firebase/firestore";
 import Toast from 'react-native-toast-message';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { listenerCount } from "npm";
 
 export async function AddUserFirestore(email, name, uid) {
   try {
@@ -20,6 +19,24 @@ export async function AddUserFirestore(email, name, uid) {
   } catch (err) {
     console.log(err.message);
   }
+}
+
+export async function getLikedFilms(uid) {
+  return new Promise((resolve, reject) => {
+    const db = firebase.firestore();
+    var docRef = db.collection("liked_films").doc(uid);
+
+    docRef.get().then((doc) => {
+      if (doc.exists) {
+        resolve(doc.data());
+      } else {
+        console.log("No such document!");
+      }
+    }).catch((error) => {
+      console.log("Error getting document:", error);
+      reject();
+    });
+  });
 }
 
 export const pushFilmsOnFirestore = async (
@@ -120,46 +137,3 @@ export const signInWithEmailAndPassword = async (email, password) => {
   });
 }
 
-export async function getLikedFilms(uid) {
-  return new Promise((resolve, reject) => {
-    const db = firebase.firestore();
-    var docRef = db.collection("liked_films").doc(uid);
-
-    docRef.get().then((doc) => {
-      if (doc.exists) {
-        resolve(doc.data());
-      } else {
-        // Toast.show({
-        //   type: 'info',
-        //   text1: "Vous n\'avez pas de film dans votre liste"
-        // });
-      }
-    }).catch((error) => {
-      console.log("Error getting document:", error);
-      reject();
-    });
-  });
-}
-
-export const deleteMovie = async (index) => {
-  const uid = await AsyncStorage.getItem("uid");
-  return new Promise((resolve, reject) => {
-    const db = firebase.firestore();
-    var docRef = db.collection("liked_films").doc(uid);
-
-    docRef.update({ movie: firebase.firestore.FieldValue.arrayRemove(index) }).then(() => {
-      // Toast.show({
-      //   type: 'success',
-      //   text1: 'Le film a été retiré de votre liste'
-      // });
-      resolve()
-    }).catch((error) => {
-      // Toast.show({
-      //   type: 'error',
-      //   text1: 'Une erreur est survenue durant la suppression',
-      //   text2: error.message
-      // });
-      reject();
-    });
-  });
-}
