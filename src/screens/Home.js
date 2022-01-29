@@ -7,16 +7,17 @@ import {
   useTheme,
   TopNav,
   themeColor,
+  Section,
+  SectionContent
 } from "react-native-rapi-ui";
 import { Ionicons } from "@expo/vector-icons";
 import Swiper from "react-native-deck-swiper";
 import { discoveryFilms } from "../API/index";
 import { pushFilmsOnFirestore } from "./utils/controllerFirestore";
+import { updateCurrentPage } from "./utils/GetDataUser";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ({ navigation }) {
-  let idCard;
-  let posterPath;
-  let title;
   const { isDarkmode, setTheme } = useTheme();
   const [movieList, setMovieList] = useState([]);
   const [rating, setRating] = useState(0);
@@ -26,7 +27,14 @@ export default function ({ navigation }) {
   }, []);
 
   const getDataMovie = async () => {
-    const result = await discoveryFilms();
+    const currentPage = await AsyncStorage.getItem("currentPage");
+    const result = await discoveryFilms(currentPage);
+    setMovieList(result.results);
+  };
+
+  const refreshList = async () => {
+    let currentPage = await updateCurrentPage();
+    const result = await discoveryFilms(currentPage);
     setMovieList(result.results);
   };
 
@@ -70,7 +78,7 @@ export default function ({ navigation }) {
             color={isDarkmode ? themeColor.white100 : themeColor.black}
           />
         }
-        rightAction={() => console.log("setting icon pressed")}
+        rightAction={() => refreshList()}
         middleContent="Settings"
       />
       <View style={styles.container}>
@@ -88,22 +96,23 @@ export default function ({ navigation }) {
               if (!card) {
                 return <View style={styles.loading}>{setLoading(true)}</View>;
               } else {
-                idCard = card.id;
-                posterPath = card.poster_path;
-                title = card.original_title;
                 setRating(card.vote_average);
                 return (
                   <View style={styles.card}>
-                    <Text style={styles.originalTtile}>
-                      {card.original_title}
-                    </Text>
-                    <Image
-                      style={styles.image}
-                      source={{
-                        uri:
-                          "https://image.tmdb.org/t/p/w500" + card.poster_path,
-                      }}
-                    />
+                    <Section>
+                      <SectionContent>
+                        <Text style={styles.titleMovie}>
+                          {card.original_title}
+                        </Text>
+                        <Image
+                          style={styles.image}
+                          source={{
+                            uri:
+                              "https://image.tmdb.org/t/p/w500" + card.poster_path,
+                          }}
+                        />
+                      </SectionContent>
+                    </Section>
                   </View>
                 );
               }
@@ -136,10 +145,9 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 20,
     borderWidth: 2,
-    backgroundColor: "transparent",
     borderColor: "transparent",
     justifyContent: "center",
-    marginBottom: "50%",
+    marginBottom: '50%',
   },
   text: {
     textAlign: "center",
@@ -151,8 +159,8 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  originalTtile: {
+  titleMovie: {
     textAlign: "center",
-    marginBottom: "1%",
+    paddingBottom: 10
   },
 });

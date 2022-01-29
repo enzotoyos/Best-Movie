@@ -2,10 +2,10 @@ import React from "react";
 import firebase from "firebase";
 import "firebase/firestore";
 // Requête pour découvrir les films les plus populaires du moment
-export const discoveryFilms = () => {
+export const discoveryFilms = (page) => {
   return new Promise((resolve, reject) => {
     const url =
-      "https://api.themoviedb.org/3/discover/movie?api_key=657047754a636ca6765f2bdce74a5c16&language=fr-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_watch_monetization_types=flatrate";
+      "https://api.themoviedb.org/3/discover/movie?api_key=657047754a636ca6765f2bdce74a5c16&language=fr-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=" + page + "&with_watch_monetization_types=flatrate";
 
     fetch(url, {
       method: "GET",
@@ -29,7 +29,7 @@ export const discoveryFilms = () => {
         resolve(responseData);
       })
       .catch((error) => console.log("error", error))
-      .finally(() => {});
+      .finally(() => { });
   });
 };
 
@@ -63,6 +63,6 @@ export const FindFilm = (id) => {
         resolve(responseData);
       })
       .catch((error) => console.log("error", error))
-      .finally(() => {});
+      .finally(() => { });
   });
 };

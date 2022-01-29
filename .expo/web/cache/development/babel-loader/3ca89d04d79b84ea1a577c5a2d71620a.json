@@ -1,1 +1,0 @@
-{"ast":null,"code":"export { default as Touchable } from \"./Touchable\";","map":{"version":3,"sources":["D:/Documents/Ynov/Mobile/Best-Movie/node_modules/react-native-cards/src/index.js"],"names":["default","Touchable"],"mappings":"AAAA,SAASA,OAAO,IAAIC,SAApB","sourcesContent":["export { default as Touchable } from './Touchable';\r\n"]},"metadata":{},"sourceType":"module"}

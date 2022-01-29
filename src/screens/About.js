@@ -4,13 +4,12 @@ import {
   StyleSheet,
   FlatList,
   Share,
-  Modal,
-  Pressable,
   RefreshControl,
+  TouchableOpacity,
+  SafeAreaView
 } from "react-native";
 import { Layout, Text, themeColor, useTheme } from "react-native-rapi-ui";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { discoveryFilms } from "../API/index";
 import { ScrollView } from "react-native";
 import firebase from "firebase/app";
 import * as WebBrowser from 'expo-web-browser';
@@ -18,19 +17,17 @@ import { getLikedFilms, deleteMovie } from "./utils/controllerFirestore";
 import {
   Card,
   CardTitle,
-  CardContent,
   CardAction,
   CardButton,
   CardImage,
 } from "react-native-cards";
-import "firebase/firestore";
-import color from "color";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
   const [likedFilms, setLikedFilms] = useState([]);
-  const [modalVisible, setModalVisible] = useState(false);
   const [result, setResult] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   const initializeTheme = async () => {
     try {
@@ -45,10 +42,6 @@ export default function ({ navigation }) {
     }
   }
 
-  useEffect(() => {
-    initializeTheme();
-  }, []);
-
   const deleteMovieFirestore = async (movie) => {
     let index = 0;
     likedFilms.forEach((element, i) => {
@@ -60,6 +53,11 @@ export default function ({ navigation }) {
     await getFilmsLiked();
   };
 
+  useEffect(() => {
+    initializeTheme();
+    getFilmsLiked();
+  }, []);
+
   const openMovieOnBrowser = async (movie) => {
     let result = await WebBrowser.openBrowserAsync('https://www.themoviedb.org/movie/' + movie.movieID);
     setResult(result);
@@ -67,8 +65,9 @@ export default function ({ navigation }) {
 
   const onShare = async (movie) => {
     try {
+      console.log(movie);
       const result = await Share.share({
-        message: "Tu devrais regarder ce film ! ",
+        message: "Tu devrais regarder ce film ! : " + movie.movieTitle + " " + "https://www.themoviedb.org/movie/" + movie.movieID,
         url: "https://image.tmdb.org/t/p/w500/" + movie.posterPath,
         title: movie.movieTitle,
       });
@@ -87,14 +86,12 @@ export default function ({ navigation }) {
   };
 
   const getFilmsLiked = async () => {
+    setRefreshing(true);
     const user = firebase.auth().currentUser;
     const collection = await getLikedFilms(user.uid);
     setLikedFilms(collection.movie);
+    setRefreshing(false)
   };
-
-  useEffect(() => {
-    getFilmsLiked();
-  }, []);
 
   const RenderCard = ({ item, i }) => (
     <View>
@@ -112,10 +109,10 @@ export default function ({ navigation }) {
           title={item.movieTitle}
           style={{ borderRadius: 7 }}
         />
-        <CardTitle subtitle={"Ajouté le: " + item.addedAt} />
+        <CardTitle subtitle={"Ajouté le : " + new Date(item.addedAt).getDate() + "/" + (new Date(item.addedAt).getMonth() + 1) + "/" + new Date(item.addedAt).getFullYear() + " " + new Date(item.addedAt).getHours() + ":" + new Date(item.addedAt).getMinutes()} />
         <CardAction separator={true} inColumn={false}>
           <CardButton
-            onPress={() => onShare(item.movieTitle)}
+            onPress={() => onShare(item)}
             title="Partager"
             color="#FEB557"
           />
@@ -124,11 +121,13 @@ export default function ({ navigation }) {
             title="Explorer"
             color="#FEB557"
           />
-          <CardButton
-            onPress={() => openMovieOnBrowser(item)}
-            title="Explorer"
-            color="#FEB557"
-          />
+          <TouchableOpacity style={styles.iconDelete} onPress={() => deleteMovieFirestore(item)}>
+            <Ionicons
+              name="trash-outline"
+              size={25}
+              color="#FEB557"
+            />
+          </TouchableOpacity>
         </CardAction>
       </Card>
     </View>
@@ -139,9 +138,11 @@ export default function ({ navigation }) {
       <View>
         <Text style={styles.title}>Votre collection</Text>
       </View>
-      <ScrollView refreshControl={<RefreshControl onRefresh={getFilmsLiked} />}>
-        <FlatList data={likedFilms} renderItem={RenderCard}></FlatList>
-      </ScrollView>
+      <SafeAreaView>
+        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getFilmsLiked} />}>
+          <FlatList data={likedFilms} renderItem={RenderCard}></FlatList>
+        </ScrollView>
+      </SafeAreaView>
     </Layout>
   );
 }
@@ -197,4 +198,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 22,
   },
+  iconDelete: {
+    marginLeft: 20
+  }
 });
