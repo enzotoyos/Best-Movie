@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   SafeAreaView
 } from "react-native";
-import { Layout, Text, themeColor, useTheme } from "react-native-rapi-ui";
+import { Layout, Text, themeColor, useTheme, TopNav } from "react-native-rapi-ui";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ScrollView } from "react-native";
 import firebase from "firebase/app";
@@ -135,9 +135,20 @@ export default function ({ navigation }) {
 
   return (
     <Layout>
-      <View>
-        <Text style={styles.title}>Votre collection</Text>
-      </View>
+      <TopNav
+        rightContent={
+          <Ionicons
+            name="refresh-circle-outline"
+            size={30}
+            color={isDarkmode ? themeColor.white100 : themeColor.black}
+          />
+        }
+        rightAction={() => getFilmsLiked()}
+        middleContent="Votre collection"
+      />
+      {/* <View>
+        <Text style={styles.title}></Text>
+      </View> */}
       <SafeAreaView>
         <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getFilmsLiked} />}>
           <FlatList data={likedFilms} renderItem={RenderCard}></FlatList>

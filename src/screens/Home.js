@@ -79,7 +79,7 @@ export default function ({ navigation }) {
           />
         }
         rightAction={() => refreshList()}
-        middleContent="Settings"
+        middleContent="Best-Movie"
       />
       <View style={styles.container}>
         <View
