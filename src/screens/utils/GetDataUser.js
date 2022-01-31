@@ -12,7 +12,7 @@ export async function updateCurrentPage() {
     await db.collection("users").doc(currentUser.uid).update({ currentPage: currentPage });
     var docRef = db.collection("users").doc(currentUser.uid);
     const result = await docRef.get();
-    AsyncStorage.setItem("currentPage", String(result.data().currentPage));
+    await AsyncStorage.setItem("currentPage", String(result.data().currentPage));
 
     return result.data().currentPage;
   } catch (err) {
@@ -155,5 +155,7 @@ export async function uploadImage(uri, ext) {
 }
 
 export async function signOut() {
+  await AsyncStorage.setItem("currentPage", String(0));
+  await AsyncStorage.setItem("uid", "");
   firebase.auth().signOut();
 }
