@@ -8,7 +8,7 @@ import {
   TopNav,
   themeColor,
   Section,
-  SectionContent
+  SectionContent,
 } from "react-native-rapi-ui";
 import { Ionicons } from "@expo/vector-icons";
 import Swiper from "react-native-deck-swiper";
@@ -25,6 +25,7 @@ export default function ({ navigation }) {
 
   useEffect(() => {
     getDataMovie();
+    renderMovie();
   }, []);
 
   const getDataMovie = async () => {
@@ -36,7 +37,7 @@ export default function ({ navigation }) {
   const refreshList = async () => {
     let currentPage = await updateCurrentPage();
     const result = await discoveryFilms(currentPage);
-    console.log('----------------------------------');
+    console.log("----------------------------------");
     setCardIndex(0);
     setMovieList(result.results);
   };
@@ -71,6 +72,29 @@ export default function ({ navigation }) {
     );
   };
 
+  const renderMovie = (item, index) => {
+    if (!item) {
+      return <View style={styles.loading}>{setLoading(true)}</View>;
+    } else {
+      setRating(item.vote_average);
+      return (
+        <View style={styles.card}>
+          <Section>
+            <SectionContent>
+              <Text style={styles.titleMovie}>{item.original_title}</Text>
+              <Image
+                style={styles.image}
+                source={{
+                  uri: "https://image.tmdb.org/t/p/w500" + item.poster_path,
+                }}
+              />
+            </SectionContent>
+          </Section>
+        </View>
+      );
+    }
+  };
+
   return (
     <Layout>
       <TopNav
@@ -95,37 +119,10 @@ export default function ({ navigation }) {
         >
           <Swiper
             cards={movieList}
-            renderCard={(card) => {
-              if (!card) {
-                return <View style={styles.loading}>{setLoading(true)}</View>;
-              } else {
-                setRating(card.vote_average);
-                return (
-                  <View style={styles.card}>
-                    <Section>
-                      <SectionContent>
-                        <Text style={styles.titleMovie}>
-                          {card.original_title}
-                        </Text>
-                        <Image
-                          style={styles.image}
-                          source={{
-                            uri:
-                              "https://image.tmdb.org/t/p/w500" + card.poster_path,
-                          }}
-                        />
-                      </SectionContent>
-                    </Section>
-                  </View>
-                );
-              }
-            }}
+            infinite={true}
+            renderCard={renderMovie}
             onSwiped={(cardIndex) => {
-              console.log('onSwiped', cardIndex);
-            }}
-            onSwipedAll={() => {
-              console.log("onSwipedAll");
-              refreshList();
+              console.log("onSwiped", cardIndex);
             }}
             onSwipedLeft={(cardIndex) => onSwipeLeft(cardIndex)}
             onSwipedRight={(cardIndex) => {
@@ -133,7 +130,8 @@ export default function ({ navigation }) {
             }} // idem à droite
             cardIndex={cardIndex}
             backgroundColor={"transparent"}
-            stackSize={3}
+            stackSize={2}
+            showSecondCard={true}
           />
         </View>
       </View>
@@ -151,7 +149,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "transparent",
     justifyContent: "center",
-    marginBottom: '50%',
+    marginBottom: "50%",
   },
   text: {
     textAlign: "center",
@@ -162,9 +160,10 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     width: "100%",
     height: "100%",
+    paddingBottom: 10,
   },
   titleMovie: {
     textAlign: "center",
-    paddingBottom: 10
+    paddingBottom: 10,
   },
 });
