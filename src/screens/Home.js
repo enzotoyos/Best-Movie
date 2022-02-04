@@ -20,6 +20,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
   const [movieList, setMovieList] = useState([]);
+  const [cardIndex, setCardIndex] = useState(0);
   const [rating, setRating] = useState(0);
 
   useEffect(() => {
@@ -35,6 +36,8 @@ export default function ({ navigation }) {
   const refreshList = async () => {
     let currentPage = await updateCurrentPage();
     const result = await discoveryFilms(currentPage);
+    console.log('----------------------------------');
+    setCardIndex(0);
     setMovieList(result.results);
   };
 
@@ -118,16 +121,17 @@ export default function ({ navigation }) {
               }
             }}
             onSwiped={(cardIndex) => {
-              // console.log(cardIndex);
+              console.log('onSwiped', cardIndex);
             }}
             onSwipedAll={() => {
               console.log("onSwipedAll");
+              refreshList();
             }}
             onSwipedLeft={(cardIndex) => onSwipeLeft(cardIndex)}
             onSwipedRight={(cardIndex) => {
               onSwipeRight(cardIndex);
             }} // idem à droite
-            cardIndex={0}
+            cardIndex={cardIndex}
             backgroundColor={"transparent"}
             stackSize={3}
           />

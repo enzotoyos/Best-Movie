@@ -6,6 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export async function AddUserFirestore(email, name, uid) {
   try {
     const db = firebase.firestore();
+    await AsyncStorage.setItem("currentPage", String("1"));
     db.collection("users").doc(uid).set({
       email: email,
       Name: name,

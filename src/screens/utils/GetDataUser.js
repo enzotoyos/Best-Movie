@@ -8,6 +8,7 @@ export async function updateCurrentPage() {
     const db = firebase.firestore();
 
     let currentPage = await AsyncStorage.getItem("currentPage");
+    console.log(currentPage);
     currentPage = parseInt(currentPage) + 1;
     await db.collection("users").doc(currentUser.uid).update({ currentPage: currentPage });
     var docRef = db.collection("users").doc(currentUser.uid);
@@ -155,7 +156,7 @@ export async function uploadImage(uri, ext) {
 }
 
 export async function signOut() {
-  await AsyncStorage.setItem("currentPage", String(0));
+  await AsyncStorage.setItem("currentPage", String('0'));
   await AsyncStorage.setItem("uid", "");
   firebase.auth().signOut();
 }
