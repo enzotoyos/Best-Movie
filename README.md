@@ -8,8 +8,8 @@
   - Authentification
   - Envoi de mail
   - Base de donnée
-- Possibilité de se construire une collection personnalisé
-- Gestion complète du Dark Mode
+- Possibilité de se construire une collection personnalisé (Ajout, Suppression)
+- Gestion complète du Dark Mode 
 
 ## 2. Installation
 
